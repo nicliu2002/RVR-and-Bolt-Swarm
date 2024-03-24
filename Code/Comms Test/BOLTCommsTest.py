@@ -23,10 +23,6 @@ def on_ir_message_4(api, channel):
         api.set_main_led(Color(0,0,255))
         time.sleep(0.05)
     api.listen_for_ir_message(message_channels)
-    
-def lightFlash(api):
-    api.set_main_led(Color(255,255,255))
-    time.sleep
         
 
 def main():
