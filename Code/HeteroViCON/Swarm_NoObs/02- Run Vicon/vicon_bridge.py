@@ -105,6 +105,7 @@ class ViconBridge:
                 else:
                     self.vicon_client.GetFrame()
                     for robot, outlet in self.outlet.items():
+                        
                         # current position and orientation according to vicon
                         global_position = self.vicon_client.GetSegmentGlobalTranslation(subjectName=robot,
                                                                                         segmentName=robot)
@@ -115,11 +116,9 @@ class ViconBridge:
                         # for this to work the robots must be correctly identified by name with keyword "bolt" or "rvr"
                         
                         if "bolt" in robot:
-                            for boltHandler, outlet in self.outlet.items():
-                                if "bolt" not in boltHandler:
-                                    self.push_data(boltHandler, [global_position[0][0], global_position[0][1]]) 
+                            self.push_data(robot, [global_position[0][0], global_position[0][1],1]) 
                         elif "rvr" in robot:
-                            self.push_data(robot, [global_position[0][0], global_position[0][1]])
+                            self.push_data(robot, [global_position[0][0], global_position[0][1],0])
                             
             except Exception as e:
                 print(e)

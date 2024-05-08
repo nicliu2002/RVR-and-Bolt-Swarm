@@ -17,6 +17,8 @@ import math
 import time
 import threading
 import signal
+import random
+from threading import Thread, Lock
 
 
 # if we run code from /home/pi/sphero-sdk-raspberrypi-python/projects/ folder use:
@@ -34,6 +36,7 @@ from sphero_sdk import RvrStreamingServices     # For locater handler
 
 # for sphero BOLT
 
+from spherov2 import scanner
 from spherov2.toy.bolt import BOLT
 from spherov2.sphero_edu import EventType, SpheroEduAPI
 from spherov2.types import Color
@@ -95,7 +98,7 @@ class Agent:
         # --------------- Start new section for bolts ----------------- #
         
         # add sphero BOLTs to the robot
-        self.robot_bolts = bolt_IDs
+        self.robot_bolts = []
         self.toys = scanner.find_toys(toy_names = self.robot_bolts)
         print('found ' + str(len(self.toys)) + ' toys.')
         
@@ -184,13 +187,13 @@ class Agent:
                 # get a new sample (you can also omit the timestamp part if you're not
                 # interested in it)
                 sample, timestamp = self.inlet.pull_sample()
-
+            
                 with self.vicon_update_lock:
-
-                    self.locator_handler_x = sample[0] / 1000               # /1000 to covert from mm to meters
-                    self.locator_handler_y = sample[1] / 1000               # /1000 to covert from mm to meters
-                    # round values to make numbers same in all OS (Windows, Linux)
-                    self.locator_handler_x , self.locator_handler_y = [round(v, 5) for v in [self.locator_handler_x, self.locator_handler_y] ]
+                    if sample[2] == 0:
+                        self.locator_handler_x = sample[0] / 1000               # /1000 to covert from mm to meters
+                        self.locator_handler_y = sample[1] / 1000               # /1000 to covert from mm to meters
+                        # round values to make numbers same in all OS (Windows, Linux)
+                        self.locator_handler_x , self.locator_handler_y = [round(v, 5) for v in [self.locator_handler_x, self.locator_handler_y] ]
 
             except Exception as e:
                 print(e)
@@ -232,8 +235,6 @@ class Agent:
     def receive_BOLT_information(self):
         for count, droid in enumerate(self.toys):
             self.boid.neighbors_IDs.append(self.robot_bolts[count])
-            BOLTposition = 
-            BOLTvelocity = 
             self.boid.neighbors_positions.append()
 
     # Function to Collect neighbor IDs, positions, velocities data by Receiving data from other robots
@@ -359,7 +360,60 @@ class Agent:
         self.animate_termination()
         
 
-    
+class BOLTLocation:
+    def __init__(self, toy, mas,subject_ind):
+        self.mas = mas
+        self.toy = toy 
+        self.subject_ind = subject_ind
+        self.WAYPOINT_RANGE = 50
+    def getPosition(self):
+        self.mas.vicon_client.GetFrame()
+        client = self.mas.vicon_client
+        subject_names = client.GetSubjectNames()
+        segment_names = client.GetSegmentNames(subject_name[subject_ind])
+        global_position = client.GetSegmentGlobalTranslation(subject_name[subject_ind], segment_name[subject_ind])
+        global_orientation = client.GetSegmentGlobalRotationEulerXYZ(subject_name[subject_ind], segment_name[subject_ind])
+        xVicon = global_position[0][0]/10
+        yVicon = global_position[0][1]/10
+        data = str(segment_names) + " , " + str(xVicon) + ", " + str(yVicon) + ", " + str(xSphero) + ", " + str(ySphero)
+        self.mas.log_data(data+"\n")
+        xvic, yvic, zvic = global_position[0]
+        rollvic, pitchvic, yawvic = global_orientation[0]
+        return xVicon , yVicon
+
+class BOLTAgent:
+
+    def __init__(self, toy, mas, xPos, yPos):
+        self.mas = mas
+        self.toy = toy 
+        self.xPos = xPos
+        self.yPos = yPos
+        self.WAYPOINT_RANGE = 50
+
+    def run_agent(self):
+        while(True):    
+            for count in range(0, 120):
+                speed = self.sphero.get_speed()
+                theta = self.sphero.get_heading() 
+                xVicon = xPos              
+                yVicon = yPos                                  
+                target_x = xVicon + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
+                target_y = yVicon + self.WAYPOINT_RANGE*math.cos(math.radians(theta))
+                #### Wall Reflection: Robots move in a 240*120 rectangle area
+                if target_x > 120 or target_x < -120:
+                    self.sphero.set_heading(-theta)
+                    theta = -theta	  
+                    target_x = xVicon + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
+                    target_y = yVicon + self.WAYPOINT_RANGE*math.cos(math.radians(theta))    
+                
+                if target_y > 120 or target_y < 0:
+                    self.sphero.set_heading(180-theta)
+                    theta = 180-theta
+                    target_x = xVicon + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
+                    target_y = yVicon + self.WAYPOINT_RANGE*math.cos(math.radians(theta))         
+                time.sleep(0.1)  
+                            
+
 
 
 
@@ -390,12 +444,40 @@ def main():
         # all_robtos_ips = ["192.168.43.192", "192.168.43.200", "192.168.43.116"]
         all_robtos_ips = Cons.rvr_ip_list
         
-        bolt_IDs = []
-
-
-        agent = Agent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips, bolt_IDs)
-
-        agent.loop.run_until_complete(agent.run_agent())
+        agentList = []  
+        bolt_IDs = ['SB-8427','SB-41F2'] 
+        toys = scanner.find_toys(toy_names=bolt_IDs)
+        print('found ' + str(len(toys)) + ' toys.')
+        agent_threads = []
+        
+        # setting up RVR thread
+        
+        selfAgent = Agent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips, bolt_IDs)
+        agentList.append(selfAgent)
+        
+        for toy in toys:
+            with SpheroEduAPI(self.toy) as self.sphero:
+                time.sleep(5)
+                theta = random.randint(-45, 45)
+                self.sphero.set_heading(theta)
+                self.sphero.set_speed(80) 
+                boltAgent = Agent()
+        
+        for agent in agentList:
+            thread = Thread(agent.loop.run_until_complete(agent.run_agent()))
+            agent_threads.append(thread)
+        
+        sunject_ind = 0
+        for toy in toys:
+            with SpheroEduAPI(self.toy) as self.sphero:
+                agentPos = BOLTLocation(toy,mas,subject_ind)
+                xPos , yPos = agentPos.getPosition()
+                BOLTagent = BOLTAgent(toy, mas, xPos, yPos)
+                BOLTthread = Thread(target=BOLTagent.run_agent)
+                agent_threads.append(BOLTthread) 
+                for i in agent_threads:
+                    i.join()
+                sunject_ind += 1 
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')
