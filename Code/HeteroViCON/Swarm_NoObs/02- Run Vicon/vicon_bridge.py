@@ -112,13 +112,16 @@ class ViconBridge:
 
                         print(f"{robot}: {global_position}")
                         
+                        if "rvr" in robot: 
+                            lastRVR = robot
+                            self.push_data(robot, [global_position[0][0], global_position[0][1],robot])
+                        else:
+                            self.push_data(lastRVR,[global_position[0][0], global_position[0][1],robot] )
+
+                        
                         # intercept push data to bolt as bolt cannot handle vicon location, instead push to "host" RVR
                         # for this to work the robots must be correctly identified by name with keyword "bolt" or "rvr"
-                        
-                        if "bolt" in robot:
-                            self.push_data(robot, [global_position[0][0], global_position[0][1],1]) 
-                        elif "rvr" in robot:
-                            self.push_data(robot, [global_position[0][0], global_position[0][1],0])
+ 
                             
             except Exception as e:
                 print(e)
@@ -134,6 +137,6 @@ class ViconBridge:
 
 
 if __name__ == '__main__':
-    robot_names = ['rvr1', 'bolt1','bolt2'] #, 'rvr4' 
+    robot_names = ['rvr1', 'SB-0823','SB-2938'] #, 'rvr4' 
     vb = ViconBridge(robot_names)
     vb.run()

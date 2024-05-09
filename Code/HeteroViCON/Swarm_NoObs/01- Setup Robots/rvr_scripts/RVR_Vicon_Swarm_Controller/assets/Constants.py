@@ -73,6 +73,9 @@ robot_length = 0.185         # Length of RVR (in meters)
 robot_height = 0.114         # Height of RVR (in meters)
 ROBOT_SIZE = [robot_width, robot_length]         # make ROBOT_SIZE in cm and int
 
+bolt_width, bolt_height, bolt_length = 0.073 # well its a sphere so go figure
+BOLT_SIZE = [bolt_width,bolt_length]
+
 ROBOT_RADIUS = 0.5 * math.sqrt(ROBOT_SIZE[0]**2 + ROBOT_SIZE[1]**2)
 
 # ##########################################

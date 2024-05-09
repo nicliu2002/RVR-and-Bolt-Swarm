@@ -50,11 +50,11 @@ from assets.Boid import Boid
 from assets.Helper_Functions import *             # Import Helper_Functions.py from the parent directory
 from Communication_Handler import Communication_Handler
 
+localAgentList = []  
 
 # Define Agent class for controlling the RVR robot.
 class Agent:
     logging = True
-    
     
     # For VICON
     vicon_enable = True
@@ -64,9 +64,16 @@ class Agent:
 
     
     # Initializes the Agent instance with the given parameters.
-    def __init__(self, start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_name, all_robtos_ips, bolt_IDs):
+    def __init__(self, start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_name, all_robtos_ips, robot_type, spheroAPI):
         
-        self.robot_name = robot_name
+        # robot type allows agent class to determine whether to use BOLT/RVR specific code
+        
+        self.robot_type = robot_type
+        
+        self.robot_name = robot_name # will look like RVR-1 for RVRs, SB-0000 for BOLTs
+        
+        if spheroAPI != None:
+            self.api = spheroAPI
 
         # object from boid to compute next linear_velocity and angular_velocity
         self.boid = Boid(start_position, start_heading_angle, robot_size, robot_id)
@@ -87,48 +94,44 @@ class Agent:
             )
         )
 
-
+        if robot_type == "rvr":
 
         # Get the robot's IP address and the IP addresses of all other robots in the swarm
-        self.robot_neighbors_ips = []
-        for ip in all_robtos_ips:
-            if ip != robot_ip:
-                self.robot_neighbors_ips.append(ip)
-        
-        # --------------- Start new section for bolts ----------------- #
-        
-        # add sphero BOLTs to the robot
-        self.robot_bolts = []
-        self.toys = scanner.find_toys(toy_names = self.robot_bolts)
-        print('found ' + str(len(self.toys)) + ' toys.')
-        
+            self.robot_neighbors_ips = []
+            for ip in all_robtos_ips:
+                if ip != robot_ip:
+                    self.robot_neighbors_ips.append(ip)
 
-        # ----------------------------------------------------------- #
-        # -------------- communication_handler ---------------------- #
-        if len(self.robot_neighbors_ips) == 0:
-            print("Note that robot_neighbors_ips is empty so robot will try to connect to a virtual default ip 0.0.0.0")
-            self.robot_neighbors_ips = ["0.0.0.0"]
+            # ----------------------------------------------------------- #
+            # -------------- communication_handler ---------------------- #
+            if len(self.robot_neighbors_ips) == 0:
+                print("Note that robot_neighbors_ips is empty so robot will try to connect to a virtual default ip 0.0.0.0")
+                self.robot_neighbors_ips = ["0.0.0.0"]
 
-        # Create a communication_handler instance for Robot
-        self.communication_handler = Communication_Handler(self.robot_name, robot_ip, self.robot_neighbors_ips)
-        # Start communication
-        self.communication_handler.start_communication()
-        # ----------------------------------------------------------- #
+            # Create a communication_handler instance for Robot
+            self.communication_handler = Communication_Handler(self.robot_name, robot_ip, self.robot_neighbors_ips)
+            # Start communication
+            self.communication_handler.start_communication()
+            # ----------------------------------------------------------- #
 
         # Handle termination signals (Ctrl+C, etc.)
         signal.signal(signal.SIGINT, self.programe_termination)
         signal.signal(signal.SIGTERM, self.programe_termination)
 
         # For VICON
-        if self.vicon_enable == True:
-            self.vicon_update_lock = threading.Lock()         # lock thrid concruntly
-            self.init_lsl()
+        # the idea for this one, is that the rvr agent will pass all bolt types their vicon location
+        if robot_type == "rvr": 
 
-        # In Python, __init__ methods of classes cannot be declared as asynchronous (async).
-        # so we create a separate asynchronous method that performs the necessary setup tasks 
-        # then we call this method in the __init__ method.
-        self.loop.run_until_complete(self.async_init() )
+            if self.vicon_enable == True:
+                self.vicon_update_lock = threading.Lock()         # lock thrid concruntly
+                self.init_lsl()
 
+            # In Python, __init__ methods of classes cannot be declared as asynchronous (async).
+            # so we create a separate asynchronous method that performs the necessary setup tasks 
+            # then we call this method in the __init__ method.
+            
+            self.loop.run_until_complete(self.async_init() )
+        
     # Asynchronously initializes the RVR by waking it up and performing initial setup.
     async def async_init(self):
         await self.rvr.wake()
@@ -178,7 +181,7 @@ class Agent:
         print(f"Stream found for {self.robot_name}")
         # create a new inlet to read from the stream
         self.inlet = StreamInlet(streams[0])
-        threading.Thread(target=self.vicon_locator).start()
+        Thread(target=self.vicon_locator).start()
 
     # Get all robots positions, ip , name from VICON
     def vicon_locator(self):
@@ -189,19 +192,23 @@ class Agent:
                 sample, timestamp = self.inlet.pull_sample()
             
                 with self.vicon_update_lock:
-                    if sample[2] == 0:
+                    if "rvr" in sample[2]:
                         self.locator_handler_x = sample[0] / 1000               # /1000 to covert from mm to meters
                         self.locator_handler_y = sample[1] / 1000               # /1000 to covert from mm to meters
                         # round values to make numbers same in all OS (Windows, Linux)
                         self.locator_handler_x , self.locator_handler_y = [round(v, 5) for v in [self.locator_handler_x, self.locator_handler_y] ]
-
+                    else:
+                        for agent in localAgentList:
+                            if sample[2] in agent.robot_ID:
+                                agent.locator_handler_x = sample[0] / 1000  
+                                agent.locator_handler_y = sample[1] / 1000  
             except Exception as e:
                 print(e)
                 pass
             finally:
                 time.sleep(1 / self.vicon_sr)
 
-    # Handler for locator sensor data
+    # Handler for locator sensor data - RVR onboard (no ViCon)
     async def locator_handler(self, locator_data):
 
         # print('Locator data response: ', locator_data)
@@ -226,27 +233,45 @@ class Agent:
     
     # Function to Broadcast robot_ID, position, velocity
     def send_information(self):
-        data = f"{self.boid.id},{self.boid.x},{self.boid.y},{self.boid.delta_x},{self.boid.delta_y}"
-        self.communication_handler.send_message_to_all(data)        # Send information to all connected robots
+        data = f"{self.boid.id},{self.boid.x},{self.boid.y},{self.boid.delta_x},{self.boid.delta_y}" # bolts and rvr will broadcast their information TBC
+        self.communication_handler.send_message_to_all(data)
+        for agent in localAgentList:
+            if agent != self:
+                agent.receive_information(agent,data) # in the local area agents will send the locations of itself to its bolts and its bolts back to itself
+              
+        
+            
 
     # Function to layer on additional BOLT information into boids algorithm - identifiable by BOLT name 
     # Subject to change, BOLT/RVR identifier in message -> different size (velocity should not matter with code)
-        
-    def receive_BOLT_information(self):
-        for count, droid in enumerate(self.toys):
-            self.boid.neighbors_IDs.append(self.robot_bolts[count])
-            self.boid.neighbors_positions.append()
-
     # Function to Collect neighbor IDs, positions, velocities data by Receiving data from other robots
-    def receive_information(self):
+    def receive_information(self, localInfo):
 
-        # clear all old neighbors data
-        self.boid.clear_neighbors_data()
+        # clear all old neighbors data        
+        # get local information from the bolts and rvr
+        
+        if localInfo != None:
+            neighbors_data = localInfo.split(',')
+            robot_id = int(neighbors_data[0])
+            print(robot_id)
+            position = [float(neighbors_data[1]), float(neighbors_data[2])]
+            velocity = [float(neighbors_data[3]), float(neighbors_data[4])]
+            
+            if robot_id in self.boid.neighbors_IDs:
+                boidID = self.boid.neighbors_IDs.index(robot_id)
+                self.boid.neighbors_positions[boidID] = position
+                self.boid.neighbors_velocities[boidID] = velocity
+                
+            else:
+                self.boid.neighbors_IDs.append(robot_id)
+                self.boid.neighbors_positions.append(position)
+                self.boid.neighbors_velocities.append(velocity)
+            return
  
         # Access a list of all last received messages from all senders
         last_received_messages = self.communication_handler.get_last_received_messages()
         # print("last_received_message= " ,last_received_messages)
-
+        
         for sender_ip, last_received_message in last_received_messages:
             # print(f"Last received message from {sender_ip}: {last_received_message}")
 
@@ -256,22 +281,24 @@ class Agent:
             position = [float(neighbors_data[1]), float(neighbors_data[2])]
             velocity = [float(neighbors_data[3]), float(neighbors_data[4])]
    
-            self.boid.neighbors_IDs.append(robot_id)
-            self.boid.neighbors_positions.append(position)
-            self.boid.neighbors_velocities.append(velocity)
-        
-        receive_BOLT_information(self)
-    
-
+            if robot_id in self.boid.neighbors_IDs:
+                boidID = self.boid.neighbors_IDs.index(robot_id)
+                self.boid.neighbors_positions[boidID] = position
+                self.boid.neighbors_velocities[boidID] = velocity
+                
+            else:
+                self.boid.neighbors_IDs.append(robot_id)
+                self.boid.neighbors_positions.append(position)
+                self.boid.neighbors_velocities.append(velocity)   
 
     # Function Runs the main agent loop, controlling the RVR's movements and behaviors.
     async def run_agent(self):
 
-        
         # The control system timeout can be modified to keep a command running longer or shorter
         # than the default 2 seconds.  This remains in effect until changed back,
         # or until a reboot occurs. Note that this is in (milliseconds).
         # we can restore default control system timeout by calling: await restore_default_control_system_timeout()
+        
         await self.rvr.set_custom_control_system_timeout(command_timeout=self.command_time_step+30)
         
         # Start time steps with zero
@@ -309,36 +336,45 @@ class Agent:
                 # Third Step:
                 # Step [3.8]: For each (Robot) moving now
                 # Drive the rvr robot based on linear_velocity and the heading_angle
-                rvr_linear_velocity = self.boid.linear_velocity
-                rvr_heading_angle = int(math.degrees(self.boid.heading_angle))     # convert from radians to degree (# Valid heading values are [-179..+180])                
-                
+                if self.robot_type == "rvr":
+                    rvr_linear_velocity = self.boid.linear_velocity
+                    rvr_heading_angle = int(math.degrees(self.boid.heading_angle))     # convert from radians to degree (# Valid heading values are [-179..+180])                
+                    
+                    if time_step % 1 == 0 or time_step < 100 :
+                        await self.rvr.drive_with_yaw_si(
+                            linear_velocity = rvr_linear_velocity,      # (float): Linear velocity target in m/s. Positive is forward, negative is backward.
+                            yaw_angle = rvr_heading_angle,              # (float): Valid yaw values are traditionally [-179..+180], but will continue wrapping outside of that range
+                            timeout = None
+                        )
+
+                    # Step [3.10]:  10 ms delay per step, Delay to allow RVR to drive
+                    await asyncio.sleep(self.command_time_step/1000)
+
+                    # Step [3.11]:  increment steps by one
+                    time_step += 1
+
+
+                    # # print some information
+                    # if time_step % 50 == 0:
+                    #     clear_console()
+                    #     print("------------------------------------------------")
+                    #     print("time_step             = " , time_step)
+                    #     print("RVR position          = " , self.boid.position)
+                    #     print("RVR heading_angle     = " , self.boid.heading_angle)
+                    #     print("RVR linear_velocity   = " , rvr_linear_velocity)
+                    #     print("RVR heading_angle     = " , rvr_heading_angle)
+
+                    if time_step == 100*Cons.MAX_STOP_TIME:
+                        print("MAX_STOP_TIME reached: Stop")
+                        break
                 if time_step % 1 == 0 or time_step < 100 :
-                    await self.rvr.drive_with_yaw_si(
-                        linear_velocity = rvr_linear_velocity,      # (float): Linear velocity target in m/s. Positive is forward, negative is backward.
-                        yaw_angle = rvr_heading_angle,              # (float): Valid yaw values are traditionally [-179..+180], but will continue wrapping outside of that range
-                        timeout = None
-                    )
-
-                # Step [3.10]:  10 ms delay per step, Delay to allow RVR to drive
-                await asyncio.sleep(self.command_time_step/1000)
-
-                # Step [3.11]:  increment steps by one
-                time_step += 1
-
-
-                # # print some information
-                # if time_step % 50 == 0:
-                #     clear_console()
-                #     print("------------------------------------------------")
-                #     print("time_step             = " , time_step)
-                #     print("RVR position          = " , self.boid.position)
-                #     print("RVR heading_angle     = " , self.boid.heading_angle)
-                #     print("RVR linear_velocity   = " , rvr_linear_velocity)
-                #     print("RVR heading_angle     = " , rvr_heading_angle)
-
-                if time_step == 100*Cons.MAX_STOP_TIME:
-                    print("MAX_STOP_TIME reached: Stop")
-                    break
+                    if self.robot_type == "bolt":
+                        bolt_linear_velocity = self.boid.linear_velocity    # these will need to be adjusted as they go
+                        bolt_heading_angle = int(math.degrees(self.boid.heading_angle))     # these will need to be adjusted too
+                        self.api.set_heading(bolt_heading_angle)
+                        self.api.set_speed(bolt_linear_velocity)
+                
+                    
 
             
             except Exception as e:
@@ -360,66 +396,8 @@ class Agent:
         self.animate_termination()
         
 
-class BOLTLocation:
-    def __init__(self, toy, mas,subject_ind):
-        self.mas = mas
-        self.toy = toy 
-        self.subject_ind = subject_ind
-        self.WAYPOINT_RANGE = 50
-    def getPosition(self):
-        self.mas.vicon_client.GetFrame()
-        client = self.mas.vicon_client
-        subject_names = client.GetSubjectNames()
-        segment_names = client.GetSegmentNames(subject_name[subject_ind])
-        global_position = client.GetSegmentGlobalTranslation(subject_name[subject_ind], segment_name[subject_ind])
-        global_orientation = client.GetSegmentGlobalRotationEulerXYZ(subject_name[subject_ind], segment_name[subject_ind])
-        xVicon = global_position[0][0]/10
-        yVicon = global_position[0][1]/10
-        data = str(segment_names) + " , " + str(xVicon) + ", " + str(yVicon) + ", " + str(xSphero) + ", " + str(ySphero)
-        self.mas.log_data(data+"\n")
-        xvic, yvic, zvic = global_position[0]
-        rollvic, pitchvic, yawvic = global_orientation[0]
-        return xVicon , yVicon
-
-class BOLTAgent:
-
-    def __init__(self, toy, mas, xPos, yPos):
-        self.mas = mas
-        self.toy = toy 
-        self.xPos = xPos
-        self.yPos = yPos
-        self.WAYPOINT_RANGE = 50
-
-    def run_agent(self):
-        while(True):    
-            for count in range(0, 120):
-                speed = self.sphero.get_speed()
-                theta = self.sphero.get_heading() 
-                xVicon = xPos              
-                yVicon = yPos                                  
-                target_x = xVicon + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
-                target_y = yVicon + self.WAYPOINT_RANGE*math.cos(math.radians(theta))
-                #### Wall Reflection: Robots move in a 240*120 rectangle area
-                if target_x > 120 or target_x < -120:
-                    self.sphero.set_heading(-theta)
-                    theta = -theta	  
-                    target_x = xVicon + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
-                    target_y = yVicon + self.WAYPOINT_RANGE*math.cos(math.radians(theta))    
-                
-                if target_y > 120 or target_y < 0:
-                    self.sphero.set_heading(180-theta)
-                    theta = 180-theta
-                    target_x = xVicon + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
-                    target_y = yVicon + self.WAYPOINT_RANGE*math.cos(math.radians(theta))         
-                time.sleep(0.1)  
-                            
-
-
-
-
-
 def main():
-    
+    global localAgentList
     # This program moves the robot using linear and angular velocities.
 
     agent = None
@@ -428,7 +406,10 @@ def main():
         # Get starting values from observer
         start_position = [0 , 0]
         start_heading_angle = 0             # put all robots face alighn with x Axis
+        bolt_startPos = [0,0]
+        bolt_startHead = 0
         robot_size = Cons.ROBOT_SIZE
+        bolt_size = Cons.BOLT_SIZE
         robot_id = 1
 
         # for Comunications
@@ -444,7 +425,6 @@ def main():
         # all_robtos_ips = ["192.168.43.192", "192.168.43.200", "192.168.43.116"]
         all_robtos_ips = Cons.rvr_ip_list
         
-        agentList = []  
         bolt_IDs = ['SB-8427','SB-41F2'] 
         toys = scanner.find_toys(toy_names=bolt_IDs)
         print('found ' + str(len(toys)) + ' toys.')
@@ -452,32 +432,21 @@ def main():
         
         # setting up RVR thread
         
-        selfAgent = Agent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips, bolt_IDs)
-        agentList.append(selfAgent)
+        selfAgent = Agent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips, "rvr")
+        localAgentList.append(selfAgent)
         
-        for toy in toys:
-            with SpheroEduAPI(self.toy) as self.sphero:
+        for id, toy in enumerate(toys):
+            with SpheroEduAPI(toy) as api:
                 time.sleep(5)
                 theta = random.randint(-45, 45)
-                self.sphero.set_heading(theta)
-                self.sphero.set_speed(80) 
-                boltAgent = Agent()
+                api.set_heading(theta)
+                api.sphero.set_speed(80) 
+                boltAgent = Agent(bolt_startPos, bolt_startHead,bolt_size, id + 2 , None, bolt_IDs[id], None, "bolt", api)
+                localAgentList.append(boltAgent)
         
-        for agent in agentList:
+        for agent in localAgentList:
             thread = Thread(agent.loop.run_until_complete(agent.run_agent()))
             agent_threads.append(thread)
-        
-        sunject_ind = 0
-        for toy in toys:
-            with SpheroEduAPI(self.toy) as self.sphero:
-                agentPos = BOLTLocation(toy,mas,subject_ind)
-                xPos , yPos = agentPos.getPosition()
-                BOLTagent = BOLTAgent(toy, mas, xPos, yPos)
-                BOLTthread = Thread(target=BOLTagent.run_agent)
-                agent_threads.append(BOLTthread) 
-                for i in agent_threads:
-                    i.join()
-                sunject_ind += 1 
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')
