@@ -1,0 +1,202 @@
+<mxfile host="app.diagrams.net" modified="2024-05-12T16:17:42.786Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="syNBaggCPB0rpTCo0Y9u" version="24.3.1" type="device">
+  <diagram name="Page-1" id="ePO0GQz407fVysWXy5VZ">
+    <mxGraphModel dx="1728" dy="915" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="3t6pHanev7ishq11L5Rs-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-4" target="3t6pHanev7ishq11L5Rs-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-39" value="LAN IP Connection" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-24">
+          <mxGeometry x="-0.2788" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-86" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classicThin;startFill=1;endArrow=none;endFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1400" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-4" value="Vicon Server" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="130" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-5" target="3t6pHanev7ishq11L5Rs-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-57" value="LAN IP Connection" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-55">
+          <mxGeometry x="-0.0429" y="1" relative="1" as="geometry">
+            <mxPoint x="28" y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-56" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-5" target="3t6pHanev7ishq11L5Rs-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-61" value="LAN IP Connection" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-56">
+          <mxGeometry x="-0.1221" relative="1" as="geometry">
+            <mxPoint x="-42" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-5" value="Host Server&lt;br&gt;[vicon_bridge.py]" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=none;startFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-6" target="3t6pHanev7ishq11L5Rs-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-27" value="UART + Power" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-9">
+          <mxGeometry x="-0.1482" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;startFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-6" target="3t6pHanev7ishq11L5Rs-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-26" value="Bluetooth" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-10">
+          <mxGeometry x="-0.1838" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-52" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;startFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-6" target="3t6pHanev7ishq11L5Rs-49">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-54" value="Bluetooth" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-52">
+          <mxGeometry x="-0.1645" y="-1" relative="1" as="geometry">
+            <mxPoint x="1" y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-6" value="Raspberry Pi&lt;br&gt;[rvr_swarm_controller.py]" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="960" y="450" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-84" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1220" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-7" value="BOLT 4" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-82" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="860" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-8" value="RVR 2" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=none;startFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-35" target="3t6pHanev7ishq11L5Rs-37">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-32" value="UART + Power" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-31">
+          <mxGeometry x="-0.1482" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;startFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-35" target="3t6pHanev7ishq11L5Rs-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-34" value="Bluetooth" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-33">
+          <mxGeometry x="-0.1838" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-51" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;startFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-35" target="3t6pHanev7ishq11L5Rs-50">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-53" value="Bluetooth" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-51">
+          <mxGeometry x="-0.2718" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-35" target="3t6pHanev7ishq11L5Rs-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="980" y="458" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="480" y="420" />
+              <mxPoint x="1000" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-67" value="LAN IP Connection" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-65">
+          <mxGeometry x="0.0194" relative="1" as="geometry">
+            <mxPoint x="-6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-35" value="Raspberry Pi&lt;br&gt;[rvr_swarm_controller.py]" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="450" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-81" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-36">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="620" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-36" value="BOLT 2" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-37">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-37" value="RVR 1" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-40" value="Locations of agents" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="740" y="250" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-83" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-49">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1040" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-49" value="BOLT 3" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="980" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="3t6pHanev7ishq11L5Rs-50">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-50" value="BOLT 1" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-68" value="Individual BOLT and RVR Locations" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="530" y="390" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-69" value="Boid resultant vector" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="620" y="520" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-70" value="Boid resultant vector" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="440" y="560" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-71" value="Boid resultant vector" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="130" y="540" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-72" value="Boid resultant vector" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="860" y="520" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-73" value="Boid resultant vector" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="560" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-75" value="Boid resultant vector" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="540" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-76" value="Agent Object&lt;br&gt;(Parallel Threads)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;dashed=1;dashPattern=8 8;strokeColor=#b85450;fillStyle=auto;gradientDirection=north;opacity=50;" vertex="1" parent="1">
+          <mxGeometry x="125" y="550" width="1230" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-85" value="" style="endArrow=none;html=1;rounded=0;endFill=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="260" y="730" as="sourcePoint" />
+            <mxPoint x="1400" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-87" value="Vicon Cameras" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3t6pHanev7ishq11L5Rs-85">
+          <mxGeometry x="-0.169" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3t6pHanev7ishq11L5Rs-88" value="Locations of agents" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="130" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
