@@ -137,6 +137,6 @@ class ViconBridge:
 
 
 if __name__ == '__main__':
-    robot_names = ['rvr1', 'SB-0823','SB-2938'] #, 'rvr4' 
+    robot_names = ['rvr5', 'SB-5938','SB-B85A'] #, 'rvr4' 
     vb = ViconBridge(robot_names)
     vb.run()

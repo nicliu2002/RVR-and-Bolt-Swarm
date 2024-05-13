@@ -425,7 +425,7 @@ def main():
         # all_robtos_ips = ["192.168.43.192", "192.168.43.200", "192.168.43.116"]
         all_robtos_ips = Cons.rvr_ip_list
         
-        bolt_IDs = ['SB-8427','SB-41F2'] 
+        bolt_IDs = Cons.BOLT_ID_list
         toys = scanner.find_toys(toy_names=bolt_IDs)
         print('found ' + str(len(toys)) + ' toys.')
         agent_threads = []
