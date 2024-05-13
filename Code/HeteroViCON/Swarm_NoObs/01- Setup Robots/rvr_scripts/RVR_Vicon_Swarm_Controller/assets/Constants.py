@@ -34,10 +34,10 @@ from Helper_Functions import *
 with open('inputs_data.json', 'r') as json_file:
     loaded_data = json.load(json_file)  
              
-RVR_name = 'rvr2'
-rvr_ip = '192.168.68.57'
-rvr_ip_list = ["192.168.68.50","192.168.68.57","192.168.68.51"]
-BOLT_ID_list = ['SB-09D3','SB-A753']
+RVR_name = 'rvr5'
+rvr_ip = '192.168.68.59'
+rvr_ip_list = ["192.168.68.59"]
+BOLT_ID_list = ['SB-5938','SB-B85A']
 RVRId = 2
 RunId = 1
 # Extract the values from the JSON data and store them in variables

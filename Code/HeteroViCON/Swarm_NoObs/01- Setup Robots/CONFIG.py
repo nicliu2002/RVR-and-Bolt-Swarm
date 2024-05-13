@@ -5,14 +5,14 @@ Configuration parameters for setting up robots
 @ version   1.0
 """
 
-name = 'rvr2'
-current_ip = '192.168.68.57'
+name = 'rvr5'
+current_ip = '192.168.68.59'
 
 
 user = 'pi'
 password = 'rvr1'
 local_path = "rvr_client.py"
-remote_path = "/home/pi/RVR_Shadi_New/"
+remote_path = "/home/pi/rvr_nick/"
 
 ssid = "RASLAB"
 psk = "boids%20Z"
