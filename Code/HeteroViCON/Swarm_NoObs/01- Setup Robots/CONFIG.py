@@ -8,7 +8,6 @@ Configuration parameters for setting up robots
 name = 'rvr5'
 current_ip = '192.168.68.59'
 
-
 user = 'pi'
 password = 'rvr1'
 local_path = "rvr_client.py"

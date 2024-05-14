@@ -41,7 +41,7 @@ class ViconBridge:
         # threading.Thread(target=self.vicon_locator()).start()
 
     def init_lsl(self, name):
-        channel_names = ["x", "y"]
+        channel_names = ["x", "y", "id"]
         n_channels = len(channel_names)
 
         # First create a new stream info.
@@ -51,7 +51,7 @@ class ViconBridge:
         #  The last value would be the serial number of the device or some other more or
         #  less locally unique identifier for the stream as far as available (you
         #  could also omit it but interrupted connections wouldn't auto-recover).
-        info = pylsl.StreamInfo(name, self.stream_type, n_channels, self.srate, 'float32', name)
+        info = pylsl.StreamInfo(name, self.stream_type, n_channels, self.srate, 'string', name)
 
         # append some meta-data
         # https://github.com/sccn/xdf/wiki/EEG-Meta-Data
@@ -114,9 +114,9 @@ class ViconBridge:
                         
                         if "rvr" in robot: 
                             lastRVR = robot
-                            self.push_data(robot, [global_position[0][0], global_position[0][1],robot])
+                            self.push_data(robot, [str(global_position[0][0]), str(global_position[0][1]),robot])
                         else:
-                            self.push_data(lastRVR,[global_position[0][0], global_position[0][1],robot] )
+                            self.push_data(lastRVR,[str(global_position[0][0]), str(global_position[0][1]),robot] )
 
                         
                         # intercept push data to bolt as bolt cannot handle vicon location, instead push to "host" RVR

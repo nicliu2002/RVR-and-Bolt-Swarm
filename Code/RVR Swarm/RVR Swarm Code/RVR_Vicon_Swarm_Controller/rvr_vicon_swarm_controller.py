@@ -51,7 +51,7 @@ from Communication_Handler import Communication_Handler
 # Define Agent class for controlling the RVR robot.
 class Agent:
     logging = True
-    robot_name = 'rvr1'
+    robot_name = 'rvr5'
     
     # For VICON
     vicon_enable = True
@@ -349,12 +349,12 @@ def main():
         # Define the IP address for Robot
         # robot_ip = "192.168.0.103"            # for Home Wifi
         # robot_ip = "192.168.43.116"           # for Mobile Wifi
-        robot_ip = "192.168.68.63"              # for RAS Wifi
+        robot_ip = "192.168.68.59"              # for RAS Wifi
         
         # List of all Robots IP addresses
         # all_robtos_ips = ["192.168.0.103", "192.168.0.104", "192.168.0.105"]
         # all_robtos_ips = ["192.168.43.192", "192.168.43.200", "192.168.43.116"]
-        all_robtos_ips = ["192.168.68.63", "192.168.68.56"]
+        all_robtos_ips = ["192.168.68.59"]
 
         agent = Agent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, all_robtos_ips)
 

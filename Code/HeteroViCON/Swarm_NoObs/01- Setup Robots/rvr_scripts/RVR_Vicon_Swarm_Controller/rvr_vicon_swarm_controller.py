@@ -59,12 +59,14 @@ class Agent:
     # For VICON
     vicon_enable = True
     vicon_sr = 100      # simpling rate (how time recive in sec)
-    locator_handler_x = None
-    locator_handler_y = None
+    locator_handler_x = 0
+    locator_handler_y = 0
 
     
     # Initializes the Agent instance with the given parameters.
     def __init__(self, start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_name, all_robtos_ips, robot_type, spheroAPI):
+        
+        print("intialising agent object... ")
         
         # robot type allows agent class to determine whether to use BOLT/RVR specific code
         
@@ -86,16 +88,17 @@ class Agent:
         Cons.MAX_ANGULAR_SPEED /= angle_rat
         Cons.MIN_ANGULAR_SPEED /= angle_rat
         
-        
-        self.loop = asyncio.get_event_loop()
-        self.rvr = SpheroRvrAsync(
-            dal=SerialAsyncDal(
-                self.loop
-            )
-        )
-
+        print("basic variables intialised")
+            
         if robot_type == "rvr":
-
+            self.loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(self.loop)
+            print("asyncio get event loop successful")
+            self.rvr = SpheroRvrAsync(
+                dal=SerialAsyncDal(
+                    self.loop
+                )
+            )
         # Get the robot's IP address and the IP addresses of all other robots in the swarm
             self.robot_neighbors_ips = []
             for ip in all_robtos_ips:
@@ -130,7 +133,7 @@ class Agent:
             # so we create a separate asynchronous method that performs the necessary setup tasks 
             # then we call this method in the __init__ method.
             
-            self.loop.run_until_complete(self.async_init() )
+            self.loop.run_until_complete(self.async_init())
         
     # Asynchronously initializes the RVR by waking it up and performing initial setup.
     async def async_init(self):
@@ -177,8 +180,8 @@ class Agent:
     # Thread For VICON to update each 10 ms
     def init_lsl(self):
         print("looking for Vicon lsl stream...")
-        streams = resolve_stream('name', self.robot_name)
-        print(f"Stream found for {self.robot_name}")
+        streams = resolve_stream('name', 'rvr5') # temporary measure
+        print(f"Stream found for {'rvr5'}") # temporary measure
         # create a new inlet to read from the stream
         self.inlet = StreamInlet(streams[0])
         Thread(target=self.vicon_locator).start()
@@ -187,21 +190,23 @@ class Agent:
     def vicon_locator(self):
         while True:
             try:
+                if self.robot_type != 'rvr':
+                    return
+                
                 # get a new sample (you can also omit the timestamp part if you're not
                 # interested in it)
                 sample, timestamp = self.inlet.pull_sample()
             
                 with self.vicon_update_lock:
-                    if "rvr" in sample[2]:
-                        self.locator_handler_x = sample[0] / 1000               # /1000 to covert from mm to meters
-                        self.locator_handler_y = sample[1] / 1000               # /1000 to covert from mm to meters
+                    if self.robot_name in sample[2]:
+                        self.locator_handler_x = float(sample[0]) / 1000               # /1000 to covert from mm to meters
+                        self.locator_handler_y = float(sample[1]) / 1000               # /1000 to covert from mm to meters
                         # round values to make numbers same in all OS (Windows, Linux)
                         self.locator_handler_x , self.locator_handler_y = [round(v, 5) for v in [self.locator_handler_x, self.locator_handler_y] ]
-                    else:
                         for agent in localAgentList:
-                            if sample[2] in agent.robot_ID:
-                                agent.locator_handler_x = sample[0] / 1000  
-                                agent.locator_handler_y = sample[1] / 1000  
+                            if  agent.robot_ID in sample[2]:
+                                agent.locator_handler_x = float(sample[0]) / 1000  
+                                agent.locator_handler_y = float(sample[1]) / 1000  
             except Exception as e:
                 print(e)
                 pass
@@ -432,8 +437,10 @@ def main():
         
         # setting up RVR thread
         
-        selfAgent = Agent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips, "rvr")
+        selfAgent = Agent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips, "rvr", None)
+        
         localAgentList.append(selfAgent)
+        print("appended rvr agent")
         
         for id, toy in enumerate(toys):
             with SpheroEduAPI(toy) as api:
@@ -443,10 +450,20 @@ def main():
                 api.sphero.set_speed(80) 
                 boltAgent = Agent(bolt_startPos, bolt_startHead,bolt_size, id + 2 , None, bolt_IDs[id], None, "bolt", api)
                 localAgentList.append(boltAgent)
+                print("appended bolt agent " + str(id))
         
+        print("creating threads", end = '')
         for agent in localAgentList:
             thread = Thread(agent.loop.run_until_complete(agent.run_agent()))
             agent_threads.append(thread)
+            print(" --- ", end = '')
+        
+        print("\n initalising threads", end = '')
+        for thread in agent_threads:
+            thread.join()
+            print(" --- ", end = '')
+            
+        thread.start()
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')
