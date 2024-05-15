@@ -76,7 +76,10 @@ class Agent:
         
         if spheroAPI != None:
             self.api = spheroAPI
-
+            
+        # give the robot an id so that it can be accessed
+        self.robot_id = robot_id
+        
         # object from boid to compute next linear_velocity and angular_velocity
         self.boid = Boid(start_position, start_heading_angle, robot_size, robot_id)
 
@@ -112,9 +115,11 @@ class Agent:
                 self.robot_neighbors_ips = ["0.0.0.0"]
 
             # Create a communication_handler instance for Robot
+            print("starting communicatoin handler")
             self.communication_handler = Communication_Handler(self.robot_name, robot_ip, self.robot_neighbors_ips)
             # Start communication
             self.communication_handler.start_communication()
+            print("communication handler was started successfully")
             # ----------------------------------------------------------- #
 
         # Handle termination signals (Ctrl+C, etc.)
@@ -145,12 +150,12 @@ class Agent:
         print('Initial heading is ' + str(self.boid.heading_angle))
         
         # Instead of passing the handler to get_battery_percentage, you can call it separately
-        await self.battery_percentage_handler()
+        # await self.battery_percentage_handler()
 
         # turn off all leds light
         await self.rvr.set_all_leds(
             led_group=RvrLedGroups.all_lights.value,
-            led_brightness_values=[color for _ in range(10) for color in [0, 0, 0]]
+            led_brightness_values=[color for _ in range(10) for color in [0, 200, 0]]
         )
 
         if self.vicon_enable == False:
@@ -169,6 +174,7 @@ class Agent:
             # Reset the x and y position of the robot
             await self.rvr.reset_locator_x_and_y()
             
+        print("asyncio init complete")
 
         await asyncio.sleep(1)                  # Give RVR time before start runing
 
@@ -188,9 +194,11 @@ class Agent:
 
     # Get all robots positions, ip , name from VICON
     def vicon_locator(self):
+        print("vicon locator starting")
         while True:
             try:
                 if self.robot_type != 'rvr':
+                    print("bolt detected, opinion rejected")
                     return
                 
                 # get a new sample (you can also omit the timestamp part if you're not
@@ -204,7 +212,7 @@ class Agent:
                         # round values to make numbers same in all OS (Windows, Linux)
                         self.locator_handler_x , self.locator_handler_y = [round(v, 5) for v in [self.locator_handler_x, self.locator_handler_y] ]
                         for agent in localAgentList:
-                            if  agent.robot_ID in sample[2]:
+                            if  sample[2] in str(agent.robot_id):
                                 agent.locator_handler_x = float(sample[0]) / 1000  
                                 agent.locator_handler_y = float(sample[1]) / 1000  
             except Exception as e:
@@ -215,7 +223,6 @@ class Agent:
 
     # Handler for locator sensor data - RVR onboard (no ViCon)
     async def locator_handler(self, locator_data):
-
         # print('Locator data response: ', locator_data)
         # Calculate the target position 50cm in front of the robot
         locator = locator_data["Locator"]
@@ -256,6 +263,7 @@ class Agent:
         # get local information from the bolts and rvr
         
         if localInfo != None:
+            print("adding bolt information")
             neighbors_data = localInfo.split(',')
             robot_id = int(neighbors_data[0])
             print(robot_id)
@@ -263,10 +271,10 @@ class Agent:
             velocity = [float(neighbors_data[3]), float(neighbors_data[4])]
             
             if robot_id in self.boid.neighbors_IDs:
+                print(robot_id)
                 boidID = self.boid.neighbors_IDs.index(robot_id)
                 self.boid.neighbors_positions[boidID] = position
                 self.boid.neighbors_velocities[boidID] = velocity
-                
             else:
                 self.boid.neighbors_IDs.append(robot_id)
                 self.boid.neighbors_positions.append(position)
@@ -276,6 +284,7 @@ class Agent:
         # Access a list of all last received messages from all senders
         last_received_messages = self.communication_handler.get_last_received_messages()
         # print("last_received_message= " ,last_received_messages)
+        print("receiving locations")
         
         for sender_ip, last_received_message in last_received_messages:
             # print(f"Last received message from {sender_ip}: {last_received_message}")
@@ -303,7 +312,7 @@ class Agent:
         # than the default 2 seconds.  This remains in effect until changed back,
         # or until a reboot occurs. Note that this is in (milliseconds).
         # we can restore default control system timeout by calling: await restore_default_control_system_timeout()
-        
+        print("running main loop of agent")
         await self.rvr.set_custom_control_system_timeout(command_timeout=self.command_time_step+30)
         
         # Start time steps with zero
@@ -333,7 +342,7 @@ class Agent:
                 self.send_information()
 
                 # Step [3.5]: For each (Robot) receive_information
-                self.receive_information()
+                self.receive_information(None)
 
                 # Step [3.7]: For each (Robot) compute the next step by update_velocity before moving any robot
                 self.boid.update_velocity()
@@ -345,7 +354,7 @@ class Agent:
                     rvr_linear_velocity = self.boid.linear_velocity
                     rvr_heading_angle = int(math.degrees(self.boid.heading_angle))     # convert from radians to degree (# Valid heading values are [-179..+180])                
                     
-                    if time_step % 1 == 0 or time_step < 100 :
+                    if time_step % 1 == 0 or time_step < 10000 :
                         await self.rvr.drive_with_yaw_si(
                             linear_velocity = rvr_linear_velocity,      # (float): Linear velocity target in m/s. Positive is forward, negative is backward.
                             yaw_angle = rvr_heading_angle,              # (float): Valid yaw values are traditionally [-179..+180], but will continue wrapping outside of that range
@@ -372,8 +381,8 @@ class Agent:
                     if time_step == 100*Cons.MAX_STOP_TIME:
                         print("MAX_STOP_TIME reached: Stop")
                         break
-                if time_step % 1 == 0 or time_step < 100 :
-                    if self.robot_type == "bolt":
+                if self.robot_type == "bolt":
+                    if time_step % 1 == 0 or time_step < 10000 :
                         bolt_linear_velocity = self.boid.linear_velocity    # these will need to be adjusted as they go
                         bolt_heading_angle = int(math.degrees(self.boid.heading_angle))     # these will need to be adjusted too
                         self.api.set_heading(bolt_heading_angle)
@@ -437,24 +446,35 @@ def main():
         
         # setting up RVR thread
         
-        selfAgent = Agent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips, "rvr", None)
-        
-        localAgentList.append(selfAgent)
-        print("appended rvr agent")
+        print("getting BOLTs ready")
         
         for id, toy in enumerate(toys):
             with SpheroEduAPI(toy) as api:
+                print("attaching api to sphero BOLT")
                 time.sleep(5)
                 theta = random.randint(-45, 45)
                 api.set_heading(theta)
-                api.sphero.set_speed(80) 
+                api.set_speed(80) 
                 boltAgent = Agent(bolt_startPos, bolt_startHead,bolt_size, id + 2 , None, bolt_IDs[id], None, "bolt", api)
                 localAgentList.append(boltAgent)
                 print("appended bolt agent " + str(id))
         
+        selfAgent = Agent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips, "rvr", None)
+        localAgentList.append(selfAgent)
+        print("appended rvr agent")
+        
+        
         print("creating threads", end = '')
+        
         for agent in localAgentList:
-            thread = Thread(agent.loop.run_until_complete(agent.run_agent()))
+            if agent.robot_id == "rvr":
+                thread = Thread(target=(agent.run_agent()))
+                thread.start()
+                print("started RVR thread: success")
+            else:
+                thread = Thread(target=(agent.run_agent()))
+                thread.start()
+                print("started BOLT thread: success")
             agent_threads.append(thread)
             print(" --- ", end = '')
         
@@ -463,7 +483,6 @@ def main():
             thread.join()
             print(" --- ", end = '')
             
-        thread.start()
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')
