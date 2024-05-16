@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
+sys.path.append('/home/pi/sphero-sdk-raspberrypi-python/')
 
 from sphero_sdk import SpheroRvrObserver
 
@@ -28,7 +28,8 @@ def main():
     """
     try:
         rvr.wake()
-
+        toys = scanner.find_toys(toy_names=['SB-5938']) # substitute your own sphero ID here
+        droid = SpheroEduAPI(toys[0])
         # Give RVR time to wake up
         time.sleep(2)
 
@@ -38,15 +39,15 @@ def main():
             linear_velocity=0.5,
             yaw_angle=0  # Valid yaw values are traditionally [-179..+180], but will continue wrapping outside of that range
         )
-
+        droid.set_speed(60)
         # Delay to allow RVR to drive
         time.sleep(1)
 
         rvr.drive_with_yaw_si(
             linear_velocity=0.5,
-            yaw_angle=0  # Valid yaw values are traditionally [-179..+180], but will continue wrapping outside of that range
+            yaw_angle=10  # Valid yaw values are traditionally [-179..+180], but will continue wrapping outside of that range
         )
-
+        droid.set_heading(10)
         # Delay to allow RVR to drive
         time.sleep(1)
 
@@ -54,7 +55,7 @@ def main():
             linear_velocity=0.5,
             yaw_angle=90  # Valid yaw values are traditionally [-179..+180], but will continue wrapping outside of that range
         )
-
+        droid.set_heading(10)
         # Delay to allow RVR to drive
         time.sleep(1)
 
@@ -62,7 +63,7 @@ def main():
             linear_velocity=0.5,
             yaw_angle=270,  # Valid yaw values are traditionally [-179..+180], but will continue wrapping outside of that range
         )
-
+        droid.set_heading(10)
         # Delay to allow RVR to drive
         time.sleep(1)
 
@@ -71,7 +72,7 @@ def main():
             linear_velocity=0,
             yaw_angle=0,  # Valid yaw values are traditionally [-179..+180], but will continue wrapping outside of that range
         )
-
+        droid.set_heading(10)
         # Delay to allow RVR to drive
         time.sleep(2)
 
