@@ -29,7 +29,7 @@ from Boids_Rules import *                       # for swarm rules ex. alignment_
 # â”ƒâ”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”ƒ #
 
 class Boid:
-    def __init__(self, start_position = [0,0], start_heading_angle = 0, boid_size = [10,10], boid_id = 0):
+    def __init__(self, start_position = [0,0], start_heading_angle = 0, boid_size = [10,10], boid_id = "0"):
 
         self.x, self.y              = start_position            # start_position contains [x, y] of the boid
         self.position               = [self.x, self.y]          # boid position as list [x, y]

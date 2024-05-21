@@ -19,6 +19,12 @@ import threading
 import signal
 import json
 
+# for BOLT
+
+from spherov2 import scanner
+from spherov2.sphero_edu import EventType, SpheroEduAPI
+
+
 # if we run code from /home/pi/sphero-sdk-raspberrypi-python/projects/ folder use:
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
@@ -39,7 +45,7 @@ class BOLTAgent:
 
     
     # Initializes the Agent instance with the given parameters.
-    def init(self, start_position, start_heading_angle, robot_size, robot_id, robot_name):
+    def __init__(self, start_position, start_heading_angle, robot_size, robot_id, robot_name):
         
         self.robot_name = robot_name
         
@@ -47,6 +53,11 @@ class BOLTAgent:
         self.boid = Boid(start_position, start_heading_angle, robot_size, robot_id)
 
         self.command_time_step = 50 # it mean run command each command_time_step ms
+        
+        self.localNeighbours = {}
+        
+        self.toy = scanner.find_toys(toy_names=self.robot_name)
+
 
         # ANGULAR_SPEED need to divide by (angle_rat), to make change of ANGULAR_SPEED every 100 step correct as target value you want
         # for ex. if we want 0.9 rad/s this mean that we need to use 0.009 so after 100 step (one sec) we reach 0.9 rad/sec
@@ -88,39 +99,28 @@ class BOLTAgent:
         
         with open("localData.json", "w") as outfile:
             outfile.write(json_object)
-    # Function to Broadcast robot_ID, position, velocity
-    def send_information(self):
-        data = str(self.localNeighbours)        
-        self.communication_handler.send_message_to_all(data)        # Send information to all connected robots
 
     # Function to Collect neighbor IDs, positions, velocities data by Receiving data from other robots
     def receive_information(self):
-        # clear all old neighbors data
-        self.boid.clear_neighbors_data()
- 
-        # Access a list of all last received messages from all senders
-        last_received_messages = self.communication_handler.get_last_received_messages()
-        # print("last_received_message= " ,last_received_messages)
+        with open('location.json', 'r') as openfile:
+            # Reading from json file
+            json_object = json.load(openfile)
         
-        for sender_ip, last_received_message in last_received_messages:
-            # print(f"Last received message from {sender_ip}: {last_received_message}")
-
-            neighbors_data = last_received_message.split(',')
-            robot_id = int(neighbors_data[0])
-            print(robot_id)
-            position = [float(neighbors_data[1]), float(neighbors_data[2])]
-            velocity = [float(neighbors_data[3]), float(neighbors_data[4])]
-   
-            self.boid.neighbors_IDs.append(robot_id)
-            self.boid.neighbors_positions.append(position)
-            self.boid.neighbors_velocities.append(velocity)
+        for key, data in json_object:
+            if key != self.boid.id:
+                position = [float(data[0]), float(data[1])]
+                velocity = [float(data[2]), float(data[3])]
+    
+                self.boid.neighbors_IDs.append(key)
+                self.boid.neighbors_positions.append(position)
+                self.boid.neighbors_velocities.append(velocity)
         
         for key, data in self.localNeighbours:
             if key != self.boid.id:
                 position = [float(data[0]), float(data[1])]
                 velocity = [float(data[2]), float(data[3])]
     
-                self.boid.neighbors_IDs.append(robot_id)
+                self.boid.neighbors_IDs.append(key)
                 self.boid.neighbors_positions.append(position)
                 self.boid.neighbors_velocities.append(velocity)
                 
@@ -148,11 +148,9 @@ class BOLTAgent:
 
                 # Second Step: 
                 # Update linear and angular velocities here based on boid rules
-
+                self.updateLocalData()
                 # Step [3.4]: For each (Robot) send_information to server_data
                 # we skip this step and we will use robots list in function receive_information
-                self.send_information()
-
                 # Step [3.5]: For each (Robot) receive_information
                 self.receive_information()
 
@@ -162,7 +160,16 @@ class BOLTAgent:
                 # Third Step:
                 # Step [3.8]: For each (Robot) moving now
                 # Drive the rvr robot based on linear_velocity and the heading_angle
-
+                
+                newSpeed =  (self.boid.linear_velocity)*50
+                newHeading = int(math.degrees(self.boid.heading_angle))
+                
+                
+                with SpheroEduAPI(self.toy) as droid:            
+                    self.sphero.set_heading(heading_angle)
+                    time.sleep(0.5)
+                    self.sphero.set_speed(newSpeed)
+                    time.sleep(0.5) 
                 time_step += 1
 
 
@@ -196,8 +203,6 @@ class BOLTAgent:
             frame (frame): The current stack frame.
         """
         print(f"Termination signal received (Signal {signum}). Cleaning up...")
-        self.communication_handler.handle_termination()
-        self.animate_termination()
-        
+
 
 

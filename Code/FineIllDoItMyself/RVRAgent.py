@@ -52,7 +52,7 @@ class RVRAgent:
 
     
     # Initializes the Agent instance with the given parameters.
-    def init(self, start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_name, all_robtos_ips):
+    def __init__(self, start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_name, all_robtos_ips):
         
         self.robot_name = robot_name
 
@@ -152,7 +152,7 @@ class RVRAgent:
         self.locator_handler_x , self.locator_handler_y = [round(v, 5) for v in [self.locator_handler_x, self.locator_handler_y] ]
 
     def updateLocalData(self):
-        with open("localData.json", "w") as openfile:
+        with open("localData.json", "r") as openfile:
             jsonData = json.load(openfile)
             
         self.localNeighbours = jsonData        
@@ -168,6 +168,7 @@ class RVRAgent:
     def send_information(self):
         data = str(self.localNeighbours)        
         self.communication_handler.send_message_to_all(data)        # Send information to all connected robots
+
         
 
             
@@ -176,7 +177,10 @@ class RVRAgent:
     def receive_information(self):
         # clear all old neighbors data
         self.boid.clear_neighbors_data()
- 
+        
+        # far neighbours data for BOLT in .json
+        farNeighbours = {}
+        
         # Access a list of all last received messages from all senders
         last_received_messages = self.communication_handler.get_last_received_messages()
         # print("last_received_message= " ,last_received_messages)
@@ -188,18 +192,26 @@ class RVRAgent:
             robot_id = int(neighbors_data[0])
             print(robot_id)
             position = [float(neighbors_data[1]), float(neighbors_data[2])]
-            velocity = [float(neighbors_data[3]), float(neighbors_data[4])]
-   
+            velocity = [float(neighbors_data[3]), float(neighbors_data[4])]            
             self.boid.neighbors_IDs.append(robot_id)
             self.boid.neighbors_positions.append(position)
             self.boid.neighbors_velocities.append(velocity)
+            
+            # update each id for far neighbours to feed to BOLT through file
+            
+            farNeighbours[robot_id] = position + velocity
+
+        
+        json_object = json.dumps(farNeighbours, indent=4)
+        with open("localData.json", "w") as outfile:
+            outfile.write(json_object)
         
         for key, data in self.localNeighbours:
             if key != self.boid.id:
                 position = [float(data[0]), float(data[1])]
                 velocity = [float(data[2]), float(data[3])]
     
-                self.boid.neighbors_IDs.append(robot_id)
+                self.boid.neighbors_IDs.append(key)
                 self.boid.neighbors_positions.append(position)
                 self.boid.neighbors_velocities.append(velocity)
         
