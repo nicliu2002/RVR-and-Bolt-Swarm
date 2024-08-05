@@ -6,10 +6,13 @@ import random
 from threading import Thread, Lock
 
 # if we run code from /home/pi/sphero-sdk-raspberrypi-python/projects/ folder use:
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
 # if we run code from /home/pi/RVR folder use:
-sys.path.append('/home/pi/sphero-sdk-raspberrypi-python/')
+# sys.path.append('/home/pi/sphero-sdk-raspberrypi-python/')
+
+# running code from laptop to test compile
+# sys.path.append(r"C:\Users\nicli\Documents\Thesis\Code\sphero-sdk-raspberrypi-python\sphero-sdk-raspberrypi-python")
 
 # For sphero_sdk
 import asyncio
