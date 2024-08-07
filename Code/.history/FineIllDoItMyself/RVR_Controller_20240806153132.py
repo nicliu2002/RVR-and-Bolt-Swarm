@@ -77,23 +77,20 @@ def main():
         
         for bolt in bolt_list:
             boltAgent = BOLTAgent(start_position, start_heading_angle, bolt_size, bolt, bolt)
-            print(type(boltAgent))
             agentList.append(boltAgent)
-        
-        print(str(agentList))
         
         print("creating threads", end = '')
         
         for agent in agentList:
-            if type(agent) == 'BOLTAgent.BOLTAgent':
-                thread = Thread(target=agent.start_signal())
+            if type(agent) == BOLTAgent:
+                thread = Thread(target=agent.run_agent())
                 thread.start()
                 print("started BOLT thread: success")
             else:
                 thread = Thread(target=agent.start_signal())
-                thread.start() 
+                thread.start()
                 print("started RVR thread: success")
-            agent_threads.append(thread)    
+            agent_threads.append(thread)
             print(" --- ", end = '')
             
             print("\n initalising threads", end = '')

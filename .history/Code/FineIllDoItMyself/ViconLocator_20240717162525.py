@@ -1,12 +1,16 @@
+
 from assets import Constants as Cons
 from pylsl import resolve_stream, StreamInlet
 import time
 import threading
 import json
 
-class ViconLocator:
+
+
+
+class ViconLocator():
     
-    def __init__(self, RVR_ID, BOLT_IDs):
+    def init(self, RVR_ID, BOLT_IDs):
         # optional logging variable for future work
         logging = True
         self.RVR_ID = RVR_ID
@@ -57,7 +61,6 @@ class ViconLocator:
                         
                         # Writing to location.json
                         with open("location.json", "w") as outfile:
-                            # print("Wrote to location.json: " + str(json_object))
                             outfile.write(json_object)
                         
                     

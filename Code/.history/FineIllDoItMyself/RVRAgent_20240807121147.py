@@ -221,7 +221,7 @@ class RVRAgent:
         with open("localData.json", "w") as outfile:
             outfile.write(json_object)
         
-        for key, data in self.localNeighbours.items():
+        for key, data in self.localNeighbours:
             if key != self.boid.id:
                 position = [float(data[0]), float(data[1])]
                 velocity = [float(data[2]), float(data[3])]

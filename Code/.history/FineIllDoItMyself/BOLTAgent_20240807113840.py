@@ -54,23 +54,11 @@ class BOLTAgent:
 
         self.command_time_step = 50 # it mean run command each command_time_step ms
         
-        self.localNeighbours = {} # internal dictionary for BOLT to keep track of other BOLTs and RVR
-        # local neighbours is a dictionary with keys corresponding to boid IDs and values corresponding to boid pos and vel
-        self.localNeighbours[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y] 
-        
-        # initalise the json objects 
-        
-        json_object = json.dumps(self.localNeighbours, indent=4)
-        
-        with open("localData.json", "w") as outfile:
-            outfile.write(json_object)
-            print("Wrote to json: " + str(json_object))  
-
+        self.localNeighbours = {} # internal dictionary for BOLT to keep track of other bolts and RVR
         
         print("Looking for bolt: " + self.robot_name)
         
         self.toy = scanner.find_toy(toy_name=self.robot_name)
-        print("scanning....")
         time.sleep(5)
         
         print("Found bolt: " + str(self.toy))
@@ -114,12 +102,10 @@ class BOLTAgent:
         
         self.locator_handler_x , self.locator_handler_y = [round(v, 5) for v in [self.locator_handler_x, self.locator_handler_y] ]
 
-    # updates local .json files with robot locations
+    # updates local .json files with BOLT locations
     
     def updateLocalData(self):
-        
         print("BOLT update local data function")
-        
         with open("localData.json", "r") as openfile:
             jsonData = json.load(openfile)
             print("Read from json: " + str(jsonData))
@@ -135,28 +121,21 @@ class BOLTAgent:
     # Function to Collect neighbor IDs, positions, velocities data by Receiving data from other robots
     def receive_information(self):
         print("BOLT receive information function")
-        
-        
-        
         with open('location.json', 'r') as openfile:
             # Reading from json file
-            print("reading from json file")
             json_object = json.load(openfile)
-            print("read: " + str(json_object))
         
-        for key, data in json_object.items():
-            print("iterating through json_object")
+        for key, data in json_object:
             if key != self.boid.id:
                 position = [float(data[0]), float(data[1])]
-                # velocity = [float(data[2]), float(data[3])]
+                velocity = [float(data[2]), float(data[3])]
     
                 self.boid.neighbors_IDs.append(key)
                 self.boid.neighbors_positions.append(position)
-                # self.boid.neighbors_velocities.append(velocity)
+                self.boid.neighbors_velocities.append(velocity)
         
-        for key, data in self.localNeighbours.items():
+        for key, data in self.localNeighbours:
             if key != self.boid.id:
-                print("iterating through local neighbours \t " + str(localNeighbours))
                 position = [float(data[0]), float(data[1])]
                 velocity = [float(data[2]), float(data[3])]
     
@@ -194,19 +173,18 @@ class BOLTAgent:
                 # Step [3.5]: For each (Robot) receive_information
                 self.receive_information()
 
-                # Step [3.7]: For each (Robot) compute the next step by update_velocity before moving any robot from the boid code
+                # Step [3.7]: For each (Robot) compute the next step by update_velocity before moving any robot
                 self.boid.update_velocity()
 
                 # Third Step:
                 # Step [3.8]: For each (Robot) moving now
-                # Drive the BOLT robot based on linear_velocity and the heading_angle
+                # Drive the rvr robot based on linear_velocity and the heading_angle
                 
-                newSpeed =  int((self.boid.linear_velocity)*500)
+                newSpeed =  (self.boid.linear_velocity)*50
                 newHeading = int(math.degrees(self.boid.heading_angle))
                 
                 
-                with SpheroEduAPI(self.toy) as droid:  
-                    print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
+                with SpheroEduAPI(self.toy) as droid:            
                     droid.set_heading(newHeading)
                     time.sleep(0.5)
                     droid.set_speed(newSpeed)

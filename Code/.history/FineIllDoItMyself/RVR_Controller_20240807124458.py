@@ -44,7 +44,7 @@ from ViconLocator import ViconLocator
 def main():
     # This program moves the robot using linear and angular velocities.
 
-    try:
+    # try:
         agentList = []
         agent_threads = []
         
@@ -102,14 +102,14 @@ def main():
                 print(" --- ", end = '')
                 
 
-    except KeyboardInterrupt:
-        print('\nProgram terminated with keyboard interrupt.')
-    except Exception as e:
-        print(e)
+    # except KeyboardInterrupt:
+    #     print('\nProgram terminated with keyboard interrupt.')
+    # except Exception as e:
+    #     print(e)
 
-    finally:
-        # Clean up and close the RVR
-        print("Program ended.")
+    # finally:
+    #     # Clean up and close the RVR
+    #     print("Program ended.")
 
 if __name__ == '__main__':
     main()

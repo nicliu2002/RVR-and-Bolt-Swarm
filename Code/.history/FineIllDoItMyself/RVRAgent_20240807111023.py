@@ -60,11 +60,8 @@ class RVRAgent:
         self.boid = Boid(start_position, start_heading_angle, robot_size, robot_id)
 
         self.command_time_step = 50 # it mean run command each command_time_step ms
-        
-        self.localNeighbours = {} # internal dictionary for BOLT to keep track of other BOLTs and RVR
-        # local neighbours is a dictionary with keys corresponding to boid IDs and values corresponding to boid pos and vel
-        self.localNeighbours[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y]   
 
+        self.localNeighbours = {}
         # ANGULAR_SPEED need to divide by (angle_rat), to make change of ANGULAR_SPEED every 100 step correct as target value you want
         # for ex. if we want 0.9 rad/s this mean that we need to use 0.009 so after 100 step (one sec) we reach 0.9 rad/sec
         angle_rat = 1000/self.command_time_step
@@ -143,18 +140,15 @@ class RVRAgent:
     async def locator_handler(self):
         print("RVR locator handler function")
 
-        # ----------- commenting out location.json code for now -----------
-
-
         # Opening JSON file
-        # with open('location.json', 'r') as openfile:
-        #     # Reading from json file
-        #     json_object = json.load(openfile)
-        #     print("read json as: " + str(json_object))
+        with open('location.json', 'r') as openfile:
+            # Reading from json file
+            json_object = json.load(openfile)
+            print("read json as: " + str(json_object))
             
-        # position = json_object[self.robot_name]
-        # self.locator_handler_x = position[0]
-        # self.locator_handler_y = position[1]
+        position = json_object[self.robot_name]
+        self.locator_handler_x = position[0]
+        self.locator_handler_y = position[1]
 
         # round values to make numbers same in all OS (Windows, Linux)
         
@@ -221,7 +215,7 @@ class RVRAgent:
         with open("localData.json", "w") as outfile:
             outfile.write(json_object)
         
-        for key, data in self.localNeighbours.items():
+        for key, data in self.localNeighbours:
             if key != self.boid.id:
                 position = [float(data[0]), float(data[1])]
                 velocity = [float(data[2]), float(data[3])]

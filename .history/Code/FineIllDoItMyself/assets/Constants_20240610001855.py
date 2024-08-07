@@ -30,12 +30,12 @@ from Helper_Functions import *
 
 # Load data from the JSON file, .. becaise its in prevoius folder of CURRENT_DIRECTORY
 with open('inputs_data.json', 'r') as json_file:
-    loaded_data = json.load(json_file) 
-         
+    loaded_data = json.load(json_file)  
+             
 RVR_name = 'rvr5'
-rvr_ip = '192.168.68.57'
-rvr_ip_list = ["192.168.68.57"]
-BOLT_ID_list = ['SB-8427']
+rvr_ip = '192.168.68.59'
+rvr_ip_list = ["192.168.68.59"]
+BOLT_ID_list = ['SB-5938','SB-B85A']
 RVRId = 2
 RunId = 1
 # Extract the values from the JSON data and store them in variables

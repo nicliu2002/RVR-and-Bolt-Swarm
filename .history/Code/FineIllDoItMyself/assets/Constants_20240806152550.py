@@ -30,8 +30,8 @@ from Helper_Functions import *
 
 # Load data from the JSON file, .. becaise its in prevoius folder of CURRENT_DIRECTORY
 with open('inputs_data.json', 'r') as json_file:
-    loaded_data = json.load(json_file) 
-         
+    loaded_data = json.load(json_file)  
+             
 RVR_name = 'rvr5'
 rvr_ip = '192.168.68.57'
 rvr_ip_list = ["192.168.68.57"]

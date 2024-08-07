@@ -201,12 +201,12 @@ class BOLTAgent:
                 # Step [3.8]: For each (Robot) moving now
                 # Drive the BOLT robot based on linear_velocity and the heading_angle
                 
-                newSpeed =  int((self.boid.linear_velocity)*500)
+                newSpeed =  int((self.boid.linear_velocity)*50)
                 newHeading = int(math.degrees(self.boid.heading_angle))
                 
+                print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
                 
-                with SpheroEduAPI(self.toy) as droid:  
-                    print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
+                with SpheroEduAPI(self.toy) as droid:            
                     droid.set_heading(newHeading)
                     time.sleep(0.5)
                     droid.set_speed(newSpeed)

@@ -85,13 +85,13 @@ def main():
         print("creating threads", end = '')
         
         for agent in agentList:
-            if type(agent) == 'BOLTAgent.BOLTAgent':
-                thread = Thread(target=agent.start_signal())
+            if type(agent) == BOLTAgent.BOLTAgent:
+                thread = Thread(target=agent.run_agent())
                 thread.start()
                 print("started BOLT thread: success")
             else:
                 thread = Thread(target=agent.start_signal())
-                thread.start() 
+                thread.start()
                 print("started RVR thread: success")
             agent_threads.append(thread)    
             print(" --- ", end = '')

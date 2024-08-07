@@ -7,10 +7,10 @@ import random
 from threading import Thread, Lock
 
 # if we run code from /home/pi/sphero-sdk-raspberrypi-python/projects/ folder use:
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
 # if we run code from /home/pi/RVR folder use:
-sys.path.append('/home/pi/sphero-sdk-raspberrypi-python/')
+# sys.path.append('/home/pi/sphero-sdk-raspberrypi-python/')
 
 # running code from laptop to test compile
 # sys.path.append(r"C:\Users\nicli\Documents\Thesis\Code\sphero-sdk-raspberrypi-python\sphero-sdk-raspberrypi-python")
@@ -39,7 +39,10 @@ from assets.Helper_Functions import *             # Import Helper_Functions.py f
 
 from RVRAgent import RVRAgent
 from BOLTAgent import BOLTAgent
-from ViconLocator import ViconLocator
+import ViconLocator
+
+
+
 
 def main():
     # This program moves the robot using linear and angular velocities.
@@ -72,28 +75,26 @@ def main():
         all_robtos_ips = Cons.rvr_ip_list
         
         bolt_list = Cons.BOLT_ID_list
+
         RVR = RVRAgent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips)
         agentList.append(RVR)
         
         for bolt in bolt_list:
             boltAgent = BOLTAgent(start_position, start_heading_angle, bolt_size, bolt, bolt)
-            print(type(boltAgent))
             agentList.append(boltAgent)
-        
-        print(str(agentList))
         
         print("creating threads", end = '')
         
         for agent in agentList:
-            if type(agent) == 'BOLTAgent.BOLTAgent':
-                thread = Thread(target=agent.start_signal())
+            if type(agent) == RVRAgent:
+                thread = Thread(target=asyncio.run((agent.run_agent())))
+                thread.start()
+                print("started RVR thread: success")
+            else:
+                thread = Thread(target=agent.run_agent())
                 thread.start()
                 print("started BOLT thread: success")
-            else:
-                thread = Thread(target=agent.start_signal())
-                thread.start() 
-                print("started RVR thread: success")
-            agent_threads.append(thread)    
+            agent_threads.append(thread)
             print(" --- ", end = '')
             
             print("\n initalising threads", end = '')

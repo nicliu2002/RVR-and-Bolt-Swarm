@@ -143,18 +143,15 @@ class RVRAgent:
     async def locator_handler(self):
         print("RVR locator handler function")
 
-        # ----------- commenting out location.json code for now -----------
-
-
         # Opening JSON file
-        # with open('location.json', 'r') as openfile:
-        #     # Reading from json file
-        #     json_object = json.load(openfile)
-        #     print("read json as: " + str(json_object))
+        with open('location.json', 'r') as openfile:
+            # Reading from json file
+            json_object = json.load(openfile)
+            print("read json as: " + str(json_object))
             
-        # position = json_object[self.robot_name]
-        # self.locator_handler_x = position[0]
-        # self.locator_handler_y = position[1]
+        position = json_object[self.robot_name]
+        self.locator_handler_x = position[0]
+        self.locator_handler_y = position[1]
 
         # round values to make numbers same in all OS (Windows, Linux)
         
@@ -221,7 +218,7 @@ class RVRAgent:
         with open("localData.json", "w") as outfile:
             outfile.write(json_object)
         
-        for key, data in self.localNeighbours.items():
+        for key, data in self.localNeighbours:
             if key != self.boid.id:
                 position = [float(data[0]), float(data[1])]
                 velocity = [float(data[2]), float(data[3])]

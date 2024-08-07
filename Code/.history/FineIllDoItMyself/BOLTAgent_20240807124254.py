@@ -137,6 +137,7 @@ class BOLTAgent:
         print("BOLT receive information function")
         
         
+        # ----------- commenting out location.json code for now -----------
         
         with open('location.json', 'r') as openfile:
             # Reading from json file
@@ -144,19 +145,17 @@ class BOLTAgent:
             json_object = json.load(openfile)
             print("read: " + str(json_object))
         
-        for key, data in json_object.items():
-            print("iterating through json_object")
+        for key, data in json_object:
             if key != self.boid.id:
                 position = [float(data[0]), float(data[1])]
-                # velocity = [float(data[2]), float(data[3])]
+                velocity = [float(data[2]), float(data[3])]
     
                 self.boid.neighbors_IDs.append(key)
                 self.boid.neighbors_positions.append(position)
-                # self.boid.neighbors_velocities.append(velocity)
+                self.boid.neighbors_velocities.append(velocity)
         
         for key, data in self.localNeighbours.items():
             if key != self.boid.id:
-                print("iterating through local neighbours \t " + str(localNeighbours))
                 position = [float(data[0]), float(data[1])]
                 velocity = [float(data[2]), float(data[3])]
     
@@ -201,12 +200,12 @@ class BOLTAgent:
                 # Step [3.8]: For each (Robot) moving now
                 # Drive the BOLT robot based on linear_velocity and the heading_angle
                 
-                newSpeed =  int((self.boid.linear_velocity)*500)
+                newSpeed =  int((self.boid.linear_velocity)*50)
                 newHeading = int(math.degrees(self.boid.heading_angle))
                 
+                print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
                 
-                with SpheroEduAPI(self.toy) as droid:  
-                    print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
+                with SpheroEduAPI(self.toy) as droid:            
                     droid.set_heading(newHeading)
                     time.sleep(0.5)
                     droid.set_speed(newSpeed)

@@ -57,7 +57,7 @@ class ViconLocator:
                         
                         # Writing to location.json
                         with open("location.json", "w") as outfile:
-                            # print("Wrote to location.json: " + str(json_object))
+                            print("Wrote to location.json: " + str(json_object))
                             outfile.write(json_object)
                         
                     
