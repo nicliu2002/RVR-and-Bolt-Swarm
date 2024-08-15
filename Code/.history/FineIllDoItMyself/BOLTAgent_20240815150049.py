@@ -59,7 +59,7 @@ class BOLTAgent:
         
         # Cons.location stores all locations of BOLTs and RVR hosted on the one Raspberry Pi
         
-        Cons.location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]] 
+        Cons.Location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]] 
         
         # initalise the json objects 
         

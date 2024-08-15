@@ -99,13 +99,11 @@ class Boid:
 
         # update boid velocity
         self.velocity   = [self.delta_x, self.delta_y]  # boid velocity as list [delt_x, delt_y]
-        
         # ##########################################
         # #         Writing into a File            #
         # #                                        #
         # ##########################################
         #
-        
         RVRId = Cons.RVRId
         RunId = Cons.RunId
         TemporalStateFile = open("Swarming_id_"+str(RVRId)+"_run_"+str(RunId)+".txt", "a")

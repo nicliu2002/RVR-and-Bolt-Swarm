@@ -54,20 +54,17 @@ class BOLTAgent:
 
         self.command_time_step = 50 # it mean run command each command_time_step ms
         
-        # self.localNeighbours = {} # internal dictionary for BOLT to keep track of other BOLTs and RVR
+        self.localNeighbours = {} # internal dictionary for BOLT to keep track of other BOLTs and RVR
         # local neighbours is a dictionary with keys corresponding to boid IDs and values corresponding to boid pos and vel
-        
-        # Cons.location stores all locations of BOLTs and RVR hosted on the one Raspberry Pi
-        
-        Cons.location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]] 
+        self.localNeighbours[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y] 
         
         # initalise the json objects 
         
-        # json_object = json.dumps(self.localNeighbours, indent=4)
+        json_object = json.dumps(self.localNeighbours, indent=4)
         
-        # with open("localData.json", "w") as outfile:
-        #     outfile.write(json_object)
-        #     print("Wrote to json: " + str(json_object))  
+        with open("localData.json", "w") as outfile:
+            outfile.write(json_object)
+            print("Wrote to json: " + str(json_object))  
 
         
         print("Looking for bolt: " + self.robot_name)
@@ -98,24 +95,19 @@ class BOLTAgent:
         print("bolt start signal received")
         
         
-    # Handler for locator sensor data - this function finds the location the agent
+    # Handler for locator sensor data
     def locator_handler(self):
         
         print("BOLT locator handler function")
         
-        # # Opening JSON file
-        # with open('location.json', 'r') as openfile:
-        #     # Reading from json file
-        #     json_object = json.load(openfile)
-        #     print("Read from json: " + str(json_object))
+        # Opening JSON file
+        with open('location.json', 'r') as openfile:
+            # Reading from json file
+            json_object = json.load(openfile)
+            print("Read from json: " + str(json_object))
 
             
-        # position = json_object[self.robot_name]
-        
-        position = Cons.location[self.boid.id]
-        
-        print("BOLT position from locator handler is: " + str(position))
-        
+        position = json_object[self.robot_name]
         self.locator_handler_x = position[0]
         self.locator_handler_y = position[1]
 
@@ -127,63 +119,53 @@ class BOLTAgent:
     
     def updateLocalData(self):
         
+        
+        
         print("BOLT update local data function")
         
-        Cons.location[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y] 
-        
-        # updates Cons.location with current data from Boid
-        
-        # with open("localData.json", "r") as openfile:
-        #     jsonData = json.load(openfile)
-        #     print("Read from json: " + str(jsonData))
+        with open("localData.json", "r") as openfile:
+            jsonData = json.load(openfile)
+            print("Read from json: " + str(jsonData))
             
-        # self.localNeighbours = jsonData        
-        # self.localNeighbours[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y]   
-        # json_object = json.dumps(self.localNeighbours, indent=4)
+        self.localNeighbours = jsonData        
+        self.localNeighbours[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y]   
+        json_object = json.dumps(self.localNeighbours, indent=4)
         
-        # with open("localData.json", "w") as outfile:
-        #     outfile.write(json_object)
-        #     print("Wrote to json: " + str(jsonData))
+        with open("localData.json", "w") as outfile:
+            outfile.write(json_object)
+            print("Wrote to json: " + str(jsonData))
 
     # Function to Collect neighbor IDs, positions, velocities data by Receiving data from other robots
     def receive_information(self):
+        print("BOLT receive information function")
         
-        print("BOLT receive information function")  
         
-        localData = Cons.location
         
-        for key in localData:
-            self.boid.neighbors_IDs.append(key)
-            self.boid.neighbors_positions.append(localData[key][0])
-            self.boid.neighbors_velocities.append(localData[key][1])
+        with open('location.json', 'r') as openfile:
+            # Reading from json file
+            print("reading from json file")
+            json_object = json.load(openfile)
+            print("read: " + str(json_object))
         
-        # with open('location.json', 'r') as openfile:
-        #     # Reading from json file
-        #     print("reading from json file")
-        #     json_object = json.load(openfile)
-        #     print("read: " + str(json_object))
-        
-        # for key, data in json_object.items():
-        #     print("iterating through json_object")
-        #     if key != self.boid.id:
-        #         position = [float(data[0]), float(data[1])]
-        #         # velocity = [float(data[2]), float(data[3])]
+        for key, data in json_object.items():
+            print("iterating through json_object")
+            if key != self.boid.id:
+                position = [float(data[0]), float(data[1])]
+                # velocity = [float(data[2]), float(data[3])]
     
-        #         self.boid.neighbors_IDs.append(key)
-        #         self.boid.neighbors_positions.append(position)
-        #         self.boid.neighbors_velocities.append(velocity)
+                self.boid.neighbors_IDs.append(key)
+                self.boid.neighbors_positions.append(position)
+                # self.boid.neighbors_velocities.append(velocity)
         
-        # for key, data in self.localNeighbours.items():
-        #     if key != self.boid.id:
-        #         print("iterating through local neighbours \t " + str(self.localNeighbours))
-        #         position = [float(data[0]), float(data[1])]
-        #         velocity = [float(data[2]), float(data[3])]
+        for key, data in self.localNeighbours.items():
+            if key != self.boid.id:
+                print("iterating through local neighbours \t " + str(self.localNeighbours))
+                position = [float(data[0]), float(data[1])]
+                velocity = [float(data[2]), float(data[3])]
     
-        #         self.boid.neighbors_IDs.append(key)
-        #         self.boid.neighbors_positions.append(position)
-        #         self.boid.neighbors_velocities.append(velocity)
-        
-                
+                self.boid.neighbors_IDs.append(key)
+                self.boid.neighbors_positions.append(position)
+                self.boid.neighbors_velocities.append(velocity)
                 
     # Function Runs the main agent loop, controlling the RVR's movements and behaviors.
     
@@ -210,10 +192,7 @@ class BOLTAgent:
 
                     # Second Step: 
                     # Update linear and angular velocities here based on boid rules
-                    # 
-                    # self.updateLocalData()
-                    
-                    
+                    self.updateLocalData()
                     # Step [3.4]: For each (Robot) send_information to server_data
                     # we skip this step and we will use robots list in function receive_information
                     # Step [3.5]: For each (Robot) receive_information

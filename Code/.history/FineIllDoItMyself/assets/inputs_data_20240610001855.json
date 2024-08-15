@@ -17,7 +17,7 @@
     "ARENA_WIDTH": 2,
     "ARENA_LENGTH": 2,
     "CELL_SIZE": 0.25,
-    "NUM_OF_ROBOTS": 2,
+    "NUM_OF_ROBOTS": 1,
     "ITERATIONS_PER_SECOND": 100,
     "//Comment_05": "MAX_STOP_TIME in Seconds",
     "MAX_STOP_TIME": 200,

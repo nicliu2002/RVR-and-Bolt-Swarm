@@ -147,18 +147,16 @@ class RVRAgent:
     async def locator_handler(self):
         print("RVR locator handler function")
 
-        # # ----------- commenting out location.json code for now -----------
+        # ----------- commenting out location.json code for now -----------
 
 
-        # # Opening JSON file
-        # with open('location.json', 'r') as openfile:
-        #     # Reading from json file
-        #     json_object = json.load(openfile)
-        #     print("read json as: " + str(json_object))
+        # Opening JSON file
+        with open('location.json', 'r') as openfile:
+            # Reading from json file
+            json_object = json.load(openfile)
+            print("read json as: " + str(json_object))
             
-        # position = json_object[self.robot_name]
-        
-        position = Cons.location[self.boid.id][0]
+        position = json_object[self.robot_name]
         
         print("RVR position from json (locator handler) is: " + str(position))
 
@@ -173,20 +171,18 @@ class RVRAgent:
     def updateLocalData(self):
         
         print("RVR Update local data function")
-    
-        Cons.location[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y] 
-
-        # with open("localData.json", "r") as openfile:
-        #     jsonData = json.load(openfile)
-        #     print("read json as: " + str(jsonData))
-
-        # self.localNeighbours = jsonData        
-        # self.localNeighbours[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y]   
-        # json_object = json.dumps(self.localNeighbours, indent=4)
         
-        # with open("localData.json", "w") as outfile:
-        #     outfile.write(json_object)
-        #     print("wrote to json: " + str(json_object))
+        with open("localData.json", "r") as openfile:
+            jsonData = json.load(openfile)
+            print("read json as: " + str(jsonData))
+
+        self.localNeighbours = jsonData        
+        self.localNeighbours[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y]   
+        json_object = json.dumps(self.localNeighbours, indent=4)
+        
+        with open("localData.json", "w") as outfile:
+            outfile.write(json_object)
+            print("wrote to json: " + str(json_object))
 
         
 

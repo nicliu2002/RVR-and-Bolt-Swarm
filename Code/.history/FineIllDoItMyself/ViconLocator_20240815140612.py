@@ -49,7 +49,7 @@ class ViconLocator:
                     locator_handler_x , locator_handler_y = [round(v, 5) for v in [locator_handler_x, locator_handler_y]]
                     
                     # locations are automatically input into the bot locations dictionary --> unify the vicon bridge constants with the bot location constants
-                    Cons.location[sample[2]][0] = [locator_handler_x,locator_handler_y]
+                    Cons.location[sample[2]] = [locator_handler_x,locator_handler_y]
                         
                     
             except Exception as e:

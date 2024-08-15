@@ -82,21 +82,23 @@ def main():
         
         print(str(agentList))
         
-        print("------------------ creating threads ------------------")
+        print("creating threads", end = '')
         
         for agent in agentList:
-            thread = Thread(target=agent.start_signal)
-            print("created: " + str(type(agent)) + " thread: success")
+            if type(agent) == 'BOLTAgent.BOLTAgent':
+                thread = Thread(target=agent.start_signal)
+                print("started: " + str(type(agent)) + " thread: success")
+            else: 
+                thread = Thread(target=agent.start_signal)
+                print("started: " + str(type(agent)) + " thread: success")
             agent_threads.append(thread)    
-            print(" --- " )
+            print(" --- ", end = '')
             
-        print("\n initalising threads")
-        for thread in agent_threads:    
-            thread.start()
-            print(" --- ")
+            print("\n initalising threads", end = '')
         for thread in agent_threads:
+            thread.start
             thread.join()
-            print(" --- ")
+            print(" --- ", end = '')
                 
 
     except KeyboardInterrupt:

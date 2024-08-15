@@ -158,7 +158,7 @@ class RVRAgent:
             
         # position = json_object[self.robot_name]
         
-        position = Cons.location[self.boid.id][0]
+        position = Cons.location[self.boid.id]
         
         print("RVR position from json (locator handler) is: " + str(position))
 

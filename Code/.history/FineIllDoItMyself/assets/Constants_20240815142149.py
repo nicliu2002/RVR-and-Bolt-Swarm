@@ -43,8 +43,8 @@ RVRId = 2
 RunId = 1
 
 # super global variables
-robots = ['rvr5','SB-8427']
-location = dict.fromkeys(robots,[[0,0],[0,0]])
+
+location = dict.fromkeys(BOLT_ID_list.append(RVR_name),[[0,0],[0,0]])
 
 print("Initialised location variable as: " + str(location))
 

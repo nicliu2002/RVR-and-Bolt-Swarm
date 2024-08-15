@@ -72,32 +72,11 @@ def main():
         all_robtos_ips = Cons.rvr_ip_list
         
         bolt_list = Cons.BOLT_ID_list
-        RVR = RVRAgent(start_position, start_heading_angle, robot_size, robot_id, robot_ip, robot_id_name, all_robtos_ips)
-        agentList.append(RVR)
         
         for bolt in bolt_list:
             boltAgent = BOLTAgent(start_position, start_heading_angle, bolt_size, bolt, bolt)
-            print(type(boltAgent))
-            agentList.append(boltAgent)
+            boltAgent.start_signal()
         
-        print(str(agentList))
-        
-        print("------------------ creating threads ------------------")
-        
-        for agent in agentList:
-            thread = Thread(target=agent.start_signal)
-            print("created: " + str(type(agent)) + " thread: success")
-            agent_threads.append(thread)    
-            print(" --- " )
-            
-        print("\n initalising threads")
-        for thread in agent_threads:    
-            thread.start()
-            print(" --- ")
-        for thread in agent_threads:
-            thread.join()
-            print(" --- ")
-                
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')

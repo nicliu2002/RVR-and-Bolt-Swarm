@@ -86,12 +86,13 @@ def main():
         
         for agent in agentList:
             thread = Thread(target=agent.start_signal)
+            thread.name = agent.robot_id
             print("created: " + str(type(agent)) + " thread: success")
             agent_threads.append(thread)    
             print(" --- " )
             
         print("\n initalising threads")
-        for thread in agent_threads:    
+        for thread in agent_threads:
             thread.start()
             print(" --- ")
         for thread in agent_threads:

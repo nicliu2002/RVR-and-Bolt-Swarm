@@ -44,6 +44,7 @@ RunId = 1
 
 # super global variables
 robots = ['rvr5','SB-8427']
+print(str(robots))
 location = dict.fromkeys(robots,[[0,0],[0,0]])
 
 print("Initialised location variable as: " + str(location))

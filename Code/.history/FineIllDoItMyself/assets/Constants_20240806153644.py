@@ -28,9 +28,6 @@ from Helper_Functions import *
 # â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”� #
 # â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”�â”� #
 
-
-
-
 # Load data from the JSON file, .. becaise its in prevoius folder of CURRENT_DIRECTORY
 with open('inputs_data.json', 'r') as json_file:
     loaded_data = json.load(json_file) 
@@ -41,13 +38,6 @@ rvr_ip_list = ["192.168.68.57"]
 BOLT_ID_list = ['SB-8427']
 RVRId = 2
 RunId = 1
-
-# super global variables
-robots = ['rvr5','SB-8427']
-location = dict.fromkeys(robots,[[0,0],[0,0]])
-
-print("Initialised location variable as: " + str(location))
-
 # Extract the values from the JSON data and store them in variables
 # Behaviors Weights, numbers in range [0,1]
 ALIGNMENT_WEIGHT            = loaded_data['ALIGNMENT_WEIGHT']
@@ -92,7 +82,6 @@ ROBOT_RADIUS = 0.5 * math.sqrt(ROBOT_SIZE[0]**2 + ROBOT_SIZE[1]**2)
 # #         Make a New File                #
 # #                                        #
 # ##########################################
-
 TemporalStateFile = open("Swarming_id_"+str(RVRId)+"_run_"+str(RunId)+".txt", "w")
 print("RVR4,pos_X, pos_Y, V_x, V_y, A_x, A_y, C_x, C_y, S_x, S_y, n_a, n_c, n_s",file=TemporalStateFile)
 TemporalStateFile.close()

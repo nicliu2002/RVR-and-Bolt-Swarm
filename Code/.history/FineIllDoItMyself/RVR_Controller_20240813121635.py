@@ -64,7 +64,7 @@ def main():
         # robot_ip = "192.168.43.116"           # for Mobile Wifi
         robot_ip = Cons.rvr_ip              # for RAS Wifi
         
-        robot_id_name = Cons.RVR_name 
+        robot_id_name = Cons.RVR_name
         
         # List of all Robots IP addresses
         # all_robtos_ips = ["192.168.0.103", "192.168.0.104", "192.168.0.105"]
@@ -82,21 +82,24 @@ def main():
         
         print(str(agentList))
         
-        print("------------------ creating threads ------------------")
+        print("creating threads", end = '')
         
         for agent in agentList:
-            thread = Thread(target=agent.start_signal)
-            print("created: " + str(type(agent)) + " thread: success")
+            if type(agent) == 'BOLTAgent.BOLTAgent':
+                thread = Thread(target=agent.start_signal())
+                thread.start()
+                print("started BOLT thread: success")
+            else:
+                thread = Thread(target=agent.start_signal())
+                thread.start() 
+                print("started RVR thread: success")
             agent_threads.append(thread)    
-            print(" --- " )
+            print(" --- ", end = '')
             
-        print("\n initalising threads")
-        for thread in agent_threads:    
-            thread.start()
-            print(" --- ")
-        for thread in agent_threads:
-            thread.join()
-            print(" --- ")
+            print("\n initalising threads", end = '')
+            for thread in agent_threads:
+                thread.join()
+                print(" --- ", end = '')
                 
 
     except KeyboardInterrupt:
@@ -106,7 +109,7 @@ def main():
 
     finally:
         # Clean up and close the RVR
-        print("Program ended.") 
+        print("Program ended.")
 
 if __name__ == '__main__':
     main()

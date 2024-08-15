@@ -147,24 +147,18 @@ class RVRAgent:
     async def locator_handler(self):
         print("RVR locator handler function")
 
-        # # ----------- commenting out location.json code for now -----------
+        # ----------- commenting out location.json code for now -----------
 
 
-        # # Opening JSON file
+        # Opening JSON file
         # with open('location.json', 'r') as openfile:
         #     # Reading from json file
         #     json_object = json.load(openfile)
         #     print("read json as: " + str(json_object))
             
         # position = json_object[self.robot_name]
-        
-        position = Cons.location[self.boid.id][0]
-        
-        print("RVR position from json (locator handler) is: " + str(position))
-
-        self.locator_handler_x = position[0]
-        self.locator_handler_y = position[1]
-        
+        # self.locator_handler_x = position[0]
+        # self.locator_handler_y = position[1]
 
         # round values to make numbers same in all OS (Windows, Linux)
         
@@ -173,27 +167,25 @@ class RVRAgent:
     def updateLocalData(self):
         
         print("RVR Update local data function")
-    
-        Cons.location[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y] 
-
-        # with open("localData.json", "r") as openfile:
-        #     jsonData = json.load(openfile)
-        #     print("read json as: " + str(jsonData))
-
-        # self.localNeighbours = jsonData        
-        # self.localNeighbours[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y]   
-        # json_object = json.dumps(self.localNeighbours, indent=4)
         
-        # with open("localData.json", "w") as outfile:
-        #     outfile.write(json_object)
-        #     print("wrote to json: " + str(json_object))
+        with open("localData.json", "r") as openfile:
+            jsonData = json.load(openfile)
+            print("read json as: " + str(jsonData))
+
+        self.localNeighbours = jsonData        
+        self.localNeighbours[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y]   
+        json_object = json.dumps(self.localNeighbours, indent=4)
+        
+        with open("localData.json", "w") as outfile:
+            outfile.write(json_object)
+            print("wrote to json: " + str(json_object))
 
         
 
     # Function to Broadcast robot_ID, position, velocity
     def send_information(self):
         print("RVR sending information")
-        data = str(Cons.location)       
+        data = str(self.localNeighbours)        
         self.communication_handler.send_message_to_all(data)        # Send information to all connected robots
 
         
@@ -229,17 +221,18 @@ class RVRAgent:
             farNeighbours[robot_id] = position + velocity
 
         
-        # json_object = json.dumps(farNeighbours, indent=4)
-        # with open("localData.json", "w") as outfile:
-        #     outfile.write(json_object)
-        
-        self.localNeighbours = Cons.location
+        json_object = json.dumps(farNeighbours, indent=4)
+        with open("localData.json", "w") as outfile:
+            outfile.write(json_object)
         
         for key, data in self.localNeighbours.items():
             if key != self.boid.id:
+                position = [float(data[0]), float(data[1])]
+                velocity = [float(data[2]), float(data[3])]
+    
                 self.boid.neighbors_IDs.append(key)
-                self.boid.neighbors_positions.append(data[0])
-                self.boid.neighbors_velocities.append(data[1])
+                self.boid.neighbors_positions.append(position)
+                self.boid.neighbors_velocities.append(velocity)
         
                 
 
@@ -285,7 +278,7 @@ class RVRAgent:
 
                 # Step [3.7]: For each (Robot) compute the next step by update_velocity before moving any robot
                 self.boid.update_velocity()
-                
+
                 # Third Step:
                 # Step [3.8]: For each (Robot) moving now
                 # Drive the rvr robot based on linear_velocity and the heading_angle
@@ -335,7 +328,7 @@ class RVRAgent:
             signum (int): The signal number.
             frame (frame): The current stack frame.
         """
-        print(f"RVR Termination signal received (Signal {signum}). Cleaning up...")
+        print(f"Termination signal received (Signal {signum}). Cleaning up...")
         self.communication_handler.handle_termination()
         self.animate_termination()
         
