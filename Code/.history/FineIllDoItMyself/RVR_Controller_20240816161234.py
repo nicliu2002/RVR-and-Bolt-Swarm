@@ -5,7 +5,6 @@ import time
 import signal
 import random
 from threading import Thread, Lock
-from multiprocessing import Process
 
 # if we run code from /home/pi/sphero-sdk-raspberrypi-python/projects/ folder use:
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))

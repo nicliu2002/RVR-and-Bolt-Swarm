@@ -129,8 +129,6 @@ class BOLTAgent:
         
         print("BOLT update local data function")
         
-        print(str([self.boid.x,self.boid.y]))
-        
         Cons.location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]] 
         
         # updates Cons.location with current data from Boid
@@ -192,17 +190,14 @@ class BOLTAgent:
     
     def run_agent(self):
         
-        time_step = 0   
-        while True:
-            with SpheroEduAPI(self.toy) as droid:
+        time_step = 0
+        with SpheroEduAPI as droid:
+            while True:
                 try:
                     # First step:
                     # Step [01]: get current position from vicon
-                    self.locator_handler()
-                    
                     if self.locator_handler_x != None and self.locator_handler_y != None:
                         # self.locator_handler_x, self.locator_handler_y = self.get_position_values_after_offset([self.locator_handler_x, self.locator_handler_y, 0], Cons.GPS_OFFSET_X, Cons.GPS_OFFSET_Y)
-                        print("new Boid x/y: " + str([self.boid.x,self.boid.y]))
                         self.boid.x = self.locator_handler_x
                         self.boid.y = self.locator_handler_y
                     
@@ -231,13 +226,15 @@ class BOLTAgent:
                     # Step [3.8]: For each (Robot) moving now
                     # Drive the BOLT robot based on linear_velocity and the heading_angle
                     
-                    newSpeed =  int((self.boid.linear_velocity*255))
+                    newSpeed =  int((self.boid.linear_velocity)*500)
                     newHeading = int(math.degrees(self.boid.heading_angle))
                     
     
                     print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
                     droid.set_heading(newHeading)
                     droid.set_speed(newSpeed)
+                    
+                    time.sleep(self.command_time_step/1000)
                     
                     time_step += 1
 

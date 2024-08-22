@@ -231,13 +231,15 @@ class BOLTAgent:
                     # Step [3.8]: For each (Robot) moving now
                     # Drive the BOLT robot based on linear_velocity and the heading_angle
                     
-                    newSpeed =  int((self.boid.linear_velocity*255))
-                    newHeading = int(math.degrees(self.boid.heading_angle))
+                    newSpeed =  int((self.boid.linear_velocity)*500)
+                    newHeading = int(math.degrees(self.boid.heading_angle)*60)
                     
     
                     print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
                     droid.set_heading(newHeading)
                     droid.set_speed(newSpeed)
+                    
+                    time.sleep(1)
                     
                     time_step += 1
 

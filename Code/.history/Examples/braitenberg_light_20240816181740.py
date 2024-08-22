@@ -3,7 +3,6 @@ import math
 from spherov2 import scanner
 from spherov2.sphero_edu import EventType, SpheroEduAPI
 from spherov2.types import Color
-import random
 
 # in case of a collision, flash red, turn 45 degrees and attempt to move again
 def on_collision(api):

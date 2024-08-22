@@ -52,7 +52,7 @@ class BOLTAgent:
         # object from boid to compute next linear_velocity and angular_velocity
         self.boid = Boid(start_position, start_heading_angle, robot_size, robot_id)
 
-        self.command_time_step = 1000 # it mean run command each command_time_step ms
+        self.command_time_step = 50 # it mean run command each command_time_step ms
         
         # self.localNeighbours = {} # internal dictionary for BOLT to keep track of other BOLTs and RVR
         # local neighbours is a dictionary with keys corresponding to boid IDs and values corresponding to boid pos and vel
@@ -112,7 +112,7 @@ class BOLTAgent:
             
         # position = json_object[self.robot_name]
         
-        position = Cons.location[self.boid.id][0]
+        position = Cons.location[self.boid.id]
         
         print("BOLT position from locator handler is: " + str(position))
         
@@ -129,9 +129,7 @@ class BOLTAgent:
         
         print("BOLT update local data function")
         
-        print(str([self.boid.x,self.boid.y]))
-        
-        Cons.location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]] 
+        Cons.location[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y] 
         
         # updates Cons.location with current data from Boid
         
@@ -155,7 +153,6 @@ class BOLTAgent:
         localData = Cons.location
         
         for key in localData:
-            print(str(localData[key]))
             self.boid.neighbors_IDs.append(key)
             self.boid.neighbors_positions.append(localData[key][0])
             self.boid.neighbors_velocities.append(localData[key][1])
@@ -192,17 +189,13 @@ class BOLTAgent:
     
     def run_agent(self):
         
-        time_step = 0   
-        while True:
-            with SpheroEduAPI(self.toy) as droid:
+        time_step = 0
+            while True:
                 try:
                     # First step:
                     # Step [01]: get current position from vicon
-                    self.locator_handler()
-                    
                     if self.locator_handler_x != None and self.locator_handler_y != None:
                         # self.locator_handler_x, self.locator_handler_y = self.get_position_values_after_offset([self.locator_handler_x, self.locator_handler_y, 0], Cons.GPS_OFFSET_X, Cons.GPS_OFFSET_Y)
-                        print("new Boid x/y: " + str([self.boid.x,self.boid.y]))
                         self.boid.x = self.locator_handler_x
                         self.boid.y = self.locator_handler_y
                     
@@ -231,14 +224,13 @@ class BOLTAgent:
                     # Step [3.8]: For each (Robot) moving now
                     # Drive the BOLT robot based on linear_velocity and the heading_angle
                     
-                    newSpeed =  int((self.boid.linear_velocity*255))
+                    newSpeed =  int((self.boid.linear_velocity)*500)
                     newHeading = int(math.degrees(self.boid.heading_angle))
                     
-    
-                    print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
-                    droid.set_heading(newHeading)
-                    droid.set_speed(newSpeed)
-                    
+                    with SpheroEduAPI(self.toy) as droid:
+                        print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
+                        droid.set_heading(newHeading)
+                        droid.set_speed(newSpeed)
                     time_step += 1
 
 

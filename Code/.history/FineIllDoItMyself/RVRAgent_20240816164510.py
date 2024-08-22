@@ -59,7 +59,7 @@ class RVRAgent:
         # object from boid to compute next linear_velocity and angular_velocity
         self.boid = Boid(start_position, start_heading_angle, robot_size, robot_id)
 
-        self.command_time_step = 50 # it mean run command each command_time_step ms
+        self.command_time_step = 1000 # it mean run command each command_time_step ms
         
         self.localNeighbours = {} # internal dictionary for BOLT to keep track of other BOLTs and RVR
         # local neighbours is a dictionary with keys corresponding to boid IDs and values corresponding to boid pos and vel
@@ -174,7 +174,7 @@ class RVRAgent:
         
         print("RVR Update local data function")
     
-        Cons.location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]] 
+        Cons.location[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y] 
 
         # with open("localData.json", "r") as openfile:
         #     jsonData = json.load(openfile)
@@ -259,7 +259,6 @@ class RVRAgent:
             try:
 
                 # First step:
-                self.locator_handler()
                 # Step [01]: get current position from vicon
                 if self.locator_handler_x != None and self.locator_handler_y != None:
                     # self.locator_handler_x, self.locator_handler_y = self.get_position_values_after_offset([self.locator_handler_x, self.locator_handler_y, 0], Cons.GPS_OFFSET_X, Cons.GPS_OFFSET_Y)

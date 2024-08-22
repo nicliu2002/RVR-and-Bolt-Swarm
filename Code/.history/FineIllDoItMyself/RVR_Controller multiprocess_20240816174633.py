@@ -86,7 +86,7 @@ def main():
         print("------------------ creating threads ------------------")
         
         for agent in agentList:
-            thread = Thread(target=agent.start_signal)
+            thread = Process(target=agent.start_signal)
             print("created: " + str(type(agent)) + " thread: success")
             agent_threads.append(thread)    
             print(" --- " )

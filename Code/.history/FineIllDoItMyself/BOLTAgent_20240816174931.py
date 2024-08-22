@@ -231,7 +231,7 @@ class BOLTAgent:
                     # Step [3.8]: For each (Robot) moving now
                     # Drive the BOLT robot based on linear_velocity and the heading_angle
                     
-                    newSpeed =  int((self.boid.linear_velocity*255))
+                    newSpeed =  int((self.boid.linear_velocity/2*255))
                     newHeading = int(math.degrees(self.boid.heading_angle))
                     
     

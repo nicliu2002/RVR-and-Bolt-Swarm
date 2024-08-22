@@ -198,8 +198,6 @@ class BOLTAgent:
                 try:
                     # First step:
                     # Step [01]: get current position from vicon
-                    self.locator_handler()
-                    
                     if self.locator_handler_x != None and self.locator_handler_y != None:
                         # self.locator_handler_x, self.locator_handler_y = self.get_position_values_after_offset([self.locator_handler_x, self.locator_handler_y, 0], Cons.GPS_OFFSET_X, Cons.GPS_OFFSET_Y)
                         print("new Boid x/y: " + str([self.boid.x,self.boid.y]))
@@ -231,13 +229,15 @@ class BOLTAgent:
                     # Step [3.8]: For each (Robot) moving now
                     # Drive the BOLT robot based on linear_velocity and the heading_angle
                     
-                    newSpeed =  int((self.boid.linear_velocity*255))
-                    newHeading = int(math.degrees(self.boid.heading_angle))
+                    newSpeed =  int((self.boid.linear_velocity)*500)
+                    newHeading = int(math.degrees(self.boid.heading_angle)*60)
                     
     
                     print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
                     droid.set_heading(newHeading)
                     droid.set_speed(newSpeed)
+                    
+                    time.sleep(self.command_time_step/1000)
                     
                     time_step += 1
 

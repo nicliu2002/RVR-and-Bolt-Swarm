@@ -174,7 +174,7 @@ class RVRAgent:
         
         print("RVR Update local data function")
     
-        Cons.location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]] 
+        Cons.location[self.boid.id] = [self.boid.x,self.boid.y,self.boid.delta_x,self.boid.delta_y] 
 
         # with open("localData.json", "r") as openfile:
         #     jsonData = json.load(openfile)
@@ -204,7 +204,10 @@ class RVRAgent:
     def receive_information(self):
         # clear all old neighbors data
         self.boid.clear_neighbors_data()
-                
+        
+        # far neighbours data for BOLT in .json
+        farNeighbours = {}
+        
         # Access a list of all last received messages from all senders
         last_received_messages = self.communication_handler.get_last_received_messages()
         # print("last_received_message= " ,last_received_messages)
@@ -259,7 +262,6 @@ class RVRAgent:
             try:
 
                 # First step:
-                self.locator_handler()
                 # Step [01]: get current position from vicon
                 if self.locator_handler_x != None and self.locator_handler_y != None:
                     # self.locator_handler_x, self.locator_handler_y = self.get_position_values_after_offset([self.locator_handler_x, self.locator_handler_y, 0], Cons.GPS_OFFSET_X, Cons.GPS_OFFSET_Y)

@@ -3,7 +3,6 @@ import math
 from spherov2 import scanner
 from spherov2.sphero_edu import EventType, SpheroEduAPI
 from spherov2.types import Color
-import random
 
 # in case of a collision, flash red, turn 45 degrees and attempt to move again
 def on_collision(api):
@@ -20,7 +19,7 @@ def adjust_vel(api):
     #lum = api.get_luminosity()['ambient_light']
     #weight = 200/lum # the bigger the lum, the smaller the weight
     #print(lum)
-    weight = random.randint(50,100)
+    weight = random.randint([50,100])
     api.set_speed(100)
     api.spin(360//weight, 0.5) # the the smaller the weight the bigger the turn in the same period
 

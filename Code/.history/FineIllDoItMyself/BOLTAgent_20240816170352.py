@@ -129,8 +129,6 @@ class BOLTAgent:
         
         print("BOLT update local data function")
         
-        print(str([self.boid.x,self.boid.y]))
-        
         Cons.location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]] 
         
         # updates Cons.location with current data from Boid
@@ -192,74 +190,72 @@ class BOLTAgent:
     
     def run_agent(self):
         
-        time_step = 0   
+        time_step = 0
         while True:
-            with SpheroEduAPI(self.toy) as droid:
-                try:
-                    # First step:
-                    # Step [01]: get current position from vicon
-                    self.locator_handler()
-                    
-                    if self.locator_handler_x != None and self.locator_handler_y != None:
-                        # self.locator_handler_x, self.locator_handler_y = self.get_position_values_after_offset([self.locator_handler_x, self.locator_handler_y, 0], Cons.GPS_OFFSET_X, Cons.GPS_OFFSET_Y)
-                        print("new Boid x/y: " + str([self.boid.x,self.boid.y]))
-                        self.boid.x = self.locator_handler_x
-                        self.boid.y = self.locator_handler_y
-                    
-                    self.boid.position = [self.boid.x, self.boid.y]          # boid position as list [x, y]
-                    # update heading_angle by adding current angular_velocity value
-                    
-                    
-                    self.boid.heading_angle += self.boid.angular_velocity
-                    self.boid.heading_angle = round(self.boid.heading_angle, 5)         # round values to make numbers same in all OS (Windows, Linux)
+            try:
+                # First step:
+                # Step [01]: get current position from vicon
+                if self.locator_handler_x != None and self.locator_handler_y != None:
+                    # self.locator_handler_x, self.locator_handler_y = self.get_position_values_after_offset([self.locator_handler_x, self.locator_handler_y, 0], Cons.GPS_OFFSET_X, Cons.GPS_OFFSET_Y)
+                    self.boid.x = self.locator_handler_x
+                    self.boid.y = self.locator_handler_y
+                
+                self.boid.position = [self.boid.x, self.boid.y]          # boid position as list [x, y]
+                # update heading_angle by adding current angular_velocity value
+                
+                
+                self.boid.heading_angle += self.boid.angular_velocity
+                self.boid.heading_angle = round(self.boid.heading_angle, 5)         # round values to make numbers same in all OS (Windows, Linux)
 
-                    # Second Step: 
-                    # Update linear and angular velocities here based on boid rules
-                    # 
-                    # self.updateLocalData()
-                    
-                    
-                    # Step [3.4]: For each (Robot) send_information to server_data
-                    # we skip this step and we will use robots list in function receive_information
-                    # Step [3.5]: For each (Robot) receive_information
-                    self.receive_information()
+                # Second Step: 
+                # Update linear and angular velocities here based on boid rules
+                # 
+                # self.updateLocalData()
+                
+                
+                # Step [3.4]: For each (Robot) send_information to server_data
+                # we skip this step and we will use robots list in function receive_information
+                # Step [3.5]: For each (Robot) receive_information
+                self.receive_information()
 
-                    # Step [3.7]: For each (Robot) compute the next step by update_velocity before moving any robot from the boid code
-                    self.boid.update_velocity()
+                # Step [3.7]: For each (Robot) compute the next step by update_velocity before moving any robot from the boid code
+                self.boid.update_velocity()
 
-                    # Third Step:
-                    # Step [3.8]: For each (Robot) moving now
-                    # Drive the BOLT robot based on linear_velocity and the heading_angle
-                    
-                    newSpeed =  int((self.boid.linear_velocity*255))
-                    newHeading = int(math.degrees(self.boid.heading_angle))
-                    
-    
+                # Third Step:
+                # Step [3.8]: For each (Robot) moving now
+                # Drive the BOLT robot based on linear_velocity and the heading_angle
+                
+                newSpeed =  int((self.boid.linear_velocity)*500)
+                newHeading = int(math.degrees(self.boid.heading_angle))
+                
+                with SpheroEduAPI(self.toy) as droid:
                     print("Updating BOLT with new SPeed: " + str(newSpeed) +"new Heading:  " + str(newHeading))
                     droid.set_heading(newHeading)
                     droid.set_speed(newSpeed)
                     
-                    time_step += 1
-
-
-                    # # print some information
-                    # if time_step % 50 == 0:
-                    #     clear_console()
-                    #     print("------------------------------------------------")
-                    #     print("time_step             = " , time_step)
-                    #     print("RVR position          = " , self.boid.position)
-                    #     print("RVR heading_angle     = " , self.boid.heading_angle)
-                    #     print("RVR linear_velocity   = " , rvr_linear_velocity)
-                    #     print("RVR heading_angle     = " , rvr_heading_angle)
-
-                    if time_step == 100*Cons.MAX_STOP_TIME:
-                        print("MAX_STOP_TIME reached: Stop")
-                        break
-
+                time.sleep(self.command_time_step/1000)
                 
-                except Exception as e:
-                    print("BOLT Exception",e)
-                    self.programe_termination("Exception", "")
+                time_step += 1
+
+
+                # # print some information
+                # if time_step % 50 == 0:
+                #     clear_console()
+                #     print("------------------------------------------------")
+                #     print("time_step             = " , time_step)
+                #     print("RVR position          = " , self.boid.position)
+                #     print("RVR heading_angle     = " , self.boid.heading_angle)
+                #     print("RVR linear_velocity   = " , rvr_linear_velocity)
+                #     print("RVR heading_angle     = " , rvr_heading_angle)
+
+                if time_step == 100*Cons.MAX_STOP_TIME:
+                    print("MAX_STOP_TIME reached: Stop")
+                    break
+
+            
+            except Exception as e:
+                print("BOLT Exception",e)
+                self.programe_termination("Exception", "")
 
 
     # Function Handle termination signals gracefully.

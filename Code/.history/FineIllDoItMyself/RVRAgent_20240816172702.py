@@ -59,7 +59,7 @@ class RVRAgent:
         # object from boid to compute next linear_velocity and angular_velocity
         self.boid = Boid(start_position, start_heading_angle, robot_size, robot_id)
 
-        self.command_time_step = 50 # it mean run command each command_time_step ms
+        self.command_time_step = 1000 # it mean run command each command_time_step ms
         
         self.localNeighbours = {} # internal dictionary for BOLT to keep track of other BOLTs and RVR
         # local neighbours is a dictionary with keys corresponding to boid IDs and values corresponding to boid pos and vel

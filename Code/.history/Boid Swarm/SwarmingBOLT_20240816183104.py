@@ -215,7 +215,7 @@ class Boid:
 
 def main():
     try:
-        toys = ['SB-41E0','RV-C7F7']
+        toys = ['RV-C7F7']
         swarm = Swarm2(toys)
         threads = []
         delay = (len(toys)-1)*12

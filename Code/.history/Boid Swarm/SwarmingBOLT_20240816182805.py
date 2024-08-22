@@ -215,13 +215,13 @@ class Boid:
 
 def main():
     try:
-        toys = ['SB-41E0','RV-C7F7']
+        toys = ['SB-41E','RV-C7F7']
         swarm = Swarm2(toys)
         threads = []
         delay = (len(toys)-1)*12
 
         for toy in toys: 
-            print("finding toy: " + toy)
+            print("finding toy: " + toy)         
             boid = Boid(swarm)
             print('place next boid...')
             thread = Thread(target=boid.run_boid, args=(delay,))
