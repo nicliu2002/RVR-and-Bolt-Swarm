@@ -144,7 +144,7 @@ class RVRAgent:
         print('Battery percentage: ', battery_percentage)
 
     # Handler for locator sensor data
-    def locator_handler(self):
+    async def locator_handler(self):
         print("RVR locator handler function")
 
         # # ----------- commenting out location.json code for now -----------
@@ -160,7 +160,7 @@ class RVRAgent:
         
         position = Cons.location[self.boid.id][0]
         
-        print("RVR position from  locator handler is: "  + str(self.boid.id) + "\n Position: \t" + str(position))
+        print("RVR position from json (locator handler) is: " + str(position))
 
         self.locator_handler_x = position[0]
         self.locator_handler_y = position[1]
@@ -176,8 +176,8 @@ class RVRAgent:
     
         Cons.location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]] 
         
-        print("printing cons.location: " + str(Cons.location[self.boid.id]))
- 
+        print(f"{Cons.location[self.boid.id]=}")
+
         # with open("localData.json", "r") as openfile:
         #     jsonData = json.load(openfile)
         #     print("read json as: " + str(jsonData))
@@ -300,7 +300,7 @@ class RVRAgent:
                     )
 
                 # Step [3.10]:  10 ms delay per step, Delay to allow RVR to drive
-                await asyncio.sleep(self.command_time_step/10000)
+                await asyncio.sleep(self.command_time_step/1000)
 
                 # Step [3.11]:  increment steps by one
                 time_step += 1

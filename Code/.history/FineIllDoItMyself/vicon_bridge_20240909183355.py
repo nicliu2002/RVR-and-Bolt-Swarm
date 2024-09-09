@@ -28,7 +28,7 @@ class ViconBridge:
     vicon_sr = 100  # vicon sampling rate per second
     vicon_x = None
     vicon_y = None
-    vicon_server_ip = '192.168.68.54'
+    vicon_server_ip = '192.168.68.57'
     vicon_server_port = '801'
 
     def __init__(self, robot_names):

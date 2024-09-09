@@ -109,9 +109,6 @@ class ViconBridge:
                     for robot, outlet in self.outlet.items():
                         
                         # current position and orientation according to vicon
-                        
-                        print(robot)
-                        
                         global_position = self.vicon_client.GetSegmentGlobalTranslation(subjectName=robot,
                                                                                         segmentName=robot)
 
@@ -142,6 +139,6 @@ class ViconBridge:
 
 
 if __name__ == '__main__':
-    robot_names = ['rvr5', 'SB-B85A'] #, 'rvr5' 
+    robot_names = ['rvr5', 'SB-8427'] #, 'rvr5' 
     vb = ViconBridge(robot_names)
     vb.run()

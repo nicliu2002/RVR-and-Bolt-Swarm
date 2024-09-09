@@ -1,0 +1,31 @@
+class Agent:
+
+    def __init__(self, toy, mas, xPos, yPos):
+        self.mas = mas
+        self.toy = toy 
+        self.xPos = xPos
+        self.yPos = yPos
+        self.WAYPOINT_RANGE = 50
+
+    def run_agent(self):
+     
+        for count in range(0, 120):
+            speed = self.sphero.get_speed()
+            theta = self.sphero.get_heading() 
+            xVicon = xPos              
+            yVicon = yPos                                  
+            target_x = xVicon + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
+            target_y = yVicon + self.WAYPOINT_RANGE*math.cos(math.radians(theta))
+            #### Wall Reflection: Robots move in a 240*120 rectangle area
+            if target_x > 120 or target_x < -120:
+                self.sphero.set_heading(-theta)
+                theta = -theta	  
+                target_x = xVicon + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
+                target_y = yVicon + self.WAYPOINT_RANGE*math.cos(math.radians(theta))    
+            
+            if target_y > 120 or target_y < 0:
+                self.sphero.set_heading(180-theta)
+                theta = 180-theta
+                target_x = xVicon + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
+                target_y = yVicon + self.WAYPOINT_RANGE*math.cos(math.radians(theta))         
+            time.sleep(0.1)  

@@ -38,12 +38,12 @@ with open('inputs_data.json', 'r') as json_file:
 RVR_name = 'rvr5'
 rvr_ip = '192.168.68.57'
 rvr_ip_list = ["192.168.68.57"]
-BOLT_ID_list = ['SB-B85A']
+BOLT_ID_list = ['SB-8427']
 RVRId = 2
 RunId = 1
 
 # super global variables
-robots = ['rvr5','SB-B85A']
+robots = ['rvr5','SB-8427']
 location = dict.fromkeys(robots,[[0,0],[0,0]])
 farNeighbours = {}
 

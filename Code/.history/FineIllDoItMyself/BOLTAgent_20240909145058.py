@@ -132,7 +132,7 @@ class BOLTAgent:
         print(str([self.boid.x,self.boid.y]))
         
         Cons.location[self.boid.id] = [[self.boid.x,self.boid.y],[self.boid.delta_x,self.boid.delta_y]]
-        print("printing cons.location: " + str(Cons.location[self.boid.id]))
+        print(f"{Cons.location[self.boid.id]=}")
  
         
         # updates Cons.location with current data from Boid

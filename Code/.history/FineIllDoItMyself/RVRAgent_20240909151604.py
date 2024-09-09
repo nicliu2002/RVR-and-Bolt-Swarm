@@ -300,7 +300,7 @@ class RVRAgent:
                     )
 
                 # Step [3.10]:  10 ms delay per step, Delay to allow RVR to drive
-                await asyncio.sleep(self.command_time_step/10000)
+                await asyncio.sleep(self.command_time_step/1000)
 
                 # Step [3.11]:  increment steps by one
                 time_step += 1
