@@ -1,4 +1,5 @@
 import math
+import time
 from spherov2 import scanner
 from spherov2.toy.bolt import BOLT
 from spherov2.sphero_edu import EventType, SpheroEduAPI
@@ -19,10 +20,17 @@ class Swarm2:
         self.Locator = viconInstance
 
     # add to a list of active boids
-    def add_boid(self, boid):
-        self.boids.append(boid)
+    def add_boid(self, boid_id):
+        self.boids.append(boid_id)
+        
 
-
+    def get_speed_heading(self, id):
+        print("getting heading from vicon")
+        lastX, lastY = self.Locator.get_position(id)
+        time.sleep(0.25)
+        nowX, nowY = self.Locator.get_position(id)
+        return (math.sqrt((nowX-lastX)**2 + (nowY-lastY)**2)),(math.degrees((math.atan2((nowY-lastY), (nowX-lastX)))))
+    
     # dole out toys for assingment to new boids
     def get_next_toy(self):
         toy = self.toys[self.nextToy]
@@ -35,13 +43,12 @@ class Swarm2:
         vec_y = 0
         num_boids = 0
         for boid in self.boids:
-            xb = boid.get_location()['x']
-            yb = boid.get_location()['y']
+            # self.boids contains id strings for each one which are compatible with the locator
+            xb,yb = self.Locator.get_position(boid)
             dist = Swarm2.get_distance(x, y, xb, yb)
             dir = 180*math.atan2(x-xb, y-yb)/math.pi
             if dist < radius and dir < vision_theta/2 and dir > -(vision_theta/2):
-                thetab = boid.get_heading()
-                speedb = boid.get_speed()
+                speedb, thetab = self.get_speed_heading(boid)
                 vec_x = vec_x + speedb*math.sin(math.radians(thetab))
                 vec_y = vec_y + speedb*math.cos(math.radians(thetab))
                 num_boids = num_boids + 1
@@ -59,8 +66,7 @@ class Swarm2:
         y_com = 0
         num_boids = 0
         for boid in self.boids:
-            xb = boid.get_location()['x']
-            yb = boid.get_location()['y']
+            xb,yb = self.Locator.get_position(boid)
             dist = Swarm2.get_distance(x, y, xb, yb)
             dir = 180*math.atan2(x-xb, y-yb)/math.pi
             if dist < radius and dir < vision_theta/2 and dir > -(vision_theta/2):

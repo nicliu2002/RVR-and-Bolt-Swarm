@@ -44,7 +44,7 @@ class Boid_BOLT:
     def run_boid(self, delay):
         with SpheroEduAPI(self.toy) as boid:
             time.sleep(5)
-            self.swarm.add_boid(boid)
+            self.swarm.add_boid(self.id)
             boid.set_speed(0)
             boid.set_heading(0)
             try:
@@ -161,9 +161,7 @@ class Boid_RVR:
         self.Vmax = 80
         self.Locator = viconInstance
         self.id = id
-        self.RVR_Controller = RVR_Controller('192.168.68.57','rvr5')
-        
-
+        self.RVR_Controller = RVR_Controller('192.168.68.57','rvr5')        
     
     def get_speed_heading(self):
         print("getting heading from vicon")
@@ -174,7 +172,7 @@ class Boid_RVR:
     
     def run_boid(self, delay):
         time.sleep(5)
-        self.swarm.add_boid(boid)
+        self.swarm.add_boid(self.id)
         self.RVR_Controller.drive_control(0,0)
         try:
             for count in range(0, 240):
@@ -238,32 +236,31 @@ class Boid_RVR:
                 combined_speed = math.sqrt(combined_vel[0]*combined_vel[0] + combined_vel[1]*combined_vel[1])
                 combined_head = math.degrees(math.atan2(combined_vel[0], combined_vel[1]))
                 # print('comb speed ' + str(combined_speed) + ' ' + str(combined_head))                
-                boid.set_heading(int(combined_head))
+                self.RVR_Controller.set_heading(int(combined_head))
                 theta = combined_head
 
                 if combined_speed > self.Vmin and combined_speed < self.Vmax:
-                    boid.set_speed(int(combined_speed))
+                    self.RVR_Controller.set_speed(int(combined_speed))
                 elif combined_speed < self.Vmin:
-                    boid.set_speed(self.Vmin)
+                    self.RVR_Controller.set_speed(self.Vmin)
                 else:
-                    boid.set_speed(self.Vmax)
+                    self.RVR_Controller.set_speed(self.Vmax)
                                 
                 # calculate a predicted target 50cm in front of self
-                waypoint_x = boid.get_location()['x']
-                waypoint_y = boid.get_location()['y']
-                theta = boid.get_heading()                  
+                waypoint_x, waypoint_y = self.Locator.get_position(self.id)
+                theta = self.RVR_Controller.lastHeading                  
                 target_x = waypoint_x + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
                 target_y = waypoint_y + self.WAYPOINT_RANGE*math.cos(math.radians(theta))
                 
                 # wall reflection if target will be 'out of bounds'
-                if target_x > 100 or target_x < -100:
-                    boid.set_heading(-theta)
+                if target_x > 1500 or target_x < -1500:
+                    self.RVR_Controller.set_heading(-theta)
                     theta = -theta
                     target_x = waypoint_x + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
                     target_y = waypoint_y + self.WAYPOINT_RANGE*math.cos(math.radians(theta))    
 
                 if target_y > 100 or target_y < 0:
-                    boid.set_heading(180-theta)
+                    self.RVR_Controller.set_heading(180-theta)
                     theta = 180-theta
             
                 time.sleep(0.15)

@@ -20,7 +20,7 @@ def main():
 
         for bolt in bolts: 
             print("finding toy: " + bolt)
-            boid = Boid(swarm,vicon_instance,bolt,False)
+            boid = Boid_BOLT(swarm,vicon_instance,bolt)
             print('place next boid...')
             thread = Thread(target=boid.run_boid, args=(delay,))
             threads.append(thread)
@@ -30,7 +30,7 @@ def main():
         
         for rvr in rvrs:
             print("finding toy: " + rvr)
-            boid = Boid(swarm,vicon_instance,rvr,True)
+            boid = Boid_RVR(swarm,vicon_instance,rvr)
             print('place next boid...')
             thread = Thread(target=boid.run_boid, args=(delay,))
             threads.append(thread)

@@ -13,3 +13,17 @@ class RVR_Controller:
         
     def drive_control(self,speed,heading):
         self.outlet.push_sample([speed, heading])
+        self.lastSpeed = speed
+        self.lastHeading = heading
+    
+    def set_heading(self,heading):
+        speed = self.lastSpeed
+        self.outlet.push_sample([speed, heading])
+        self.lastHeading = heading
+        
+    def set_speed(self,speed):
+        heading = self.lastHeading
+        self.outlet.push_sample([speed,heading])
+        self.lastSpeed = speed
+    
+
