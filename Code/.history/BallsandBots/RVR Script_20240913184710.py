@@ -1,9 +1,5 @@
 import sys
 import os
-
-sys.path.append('/home/pi/sphero-sdk-raspberrypi-python/')
-
-
 import socket
 import asyncio
 from sphero_sdk import SpheroRvrAsync
@@ -34,8 +30,8 @@ async def initialize_rvr():
 async def update_rvr_movement(speed, heading):
     """Update the RVR movement with speed and heading."""
     speed = max(0, min(speed, 255))
-    speed = int(speed * 0.8)  # Scale down the speed
-    heading = int(heading % 360)  # Ensure heading is within valid range
+    speed = speed * 0.8  # Scale down the speed
+    heading = heading % 360  # Ensure heading is within valid range
     await rvr.drive_with_heading(
         speed=speed,  # Valid speed values are 0-255
         heading=heading,  # Valid heading values are 0-359

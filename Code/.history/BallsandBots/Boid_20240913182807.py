@@ -147,7 +147,7 @@ class Boid_BOLT:
 
 class Boid_RVR:
 
-    def __init__(self, swarm, viconInstance, id, rvr_ip):
+    def __init__(self, swarm, viconInstance, id):
         self.swarm = swarm
         # self.toy = swarm.get_next_toy()
         self.WAYPOINT_RANGE = 50
@@ -162,10 +162,7 @@ class Boid_RVR:
         self.Vmax = 80
         self.Locator = viconInstance
         self.id = id
-        self.RVR_Controller = RVR_Controller(rvr_ip)        
-    
-    def start_loop(self,delay):
-        asyncio.run(self.run_boid(delay))
+        self.RVR_Controller = RVR_Controller('192.168.68.57','rvr5')        
     
     def get_speed_heading(self):
         print("getting heading from vicon")
@@ -174,22 +171,12 @@ class Boid_RVR:
         nowX, nowY = self.Locator.get_position(self.id)
         return (math.sqrt((nowX-lastX)**2 + (nowY-lastY)**2)),(math.degrees((math.atan2((nowY-lastY), (nowX-lastX)))))
     
-    def calculate_heading(self):
-        print("getting heading from vicon")
-        lastX, lastY = self.Locator.get_position(self.id)
-        time.sleep(0.5)
-        nowX, nowY = self.Locator.get_position(self.id)
-        return(math.degrees((math.atan2((nowY-lastY), (nowX-lastX)))))
-     
-    
     def run_boid(self, delay):
         time.sleep(5)
         self.swarm.add_boid(self.id)
         self.RVR_Controller.drive_control(0,0)
-        
         try:
             for count in range(0, 240):
-                
                 # current position and orientation of robot 480
                 x, y =  self.Locator.get_position(self.id)
                 velocity, theta = self.get_speed_heading()
@@ -278,6 +265,5 @@ class Boid_RVR:
                     theta = 180-theta
             
                 time.sleep(0.15)
-
         except KeyboardInterrupt:
             print('Interrupted')

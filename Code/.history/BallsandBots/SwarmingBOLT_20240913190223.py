@@ -34,7 +34,7 @@ def main():
             print("finding toy: " + rvr)
             boid = Boid_RVR(swarm,vicon_instance,rvr,ip)
             print('place next boid...')
-            thread = Thread(target=boid.run_boid, args=(delay,))
+            thread = Thread(target=boid.start_loop, args=(delay,))
             threads.append(thread)
             thread.start()
             time.sleep(12)

@@ -8,10 +8,7 @@ from spherov2.types import Color
 class Swarm2:
 
     def __init__(self, names, viconInstance):
-        
-        filtered_names = [name for name in names if "rvr" not in name.lower()]
-        
-        self.toys = scanner.find_toys(toy_names=filtered_names)
+        self.toys = scanner.find_toys(toy_names=names)
             
         print('found ' + str(len(self.toys)) + ' toys.')
         self.boids = []

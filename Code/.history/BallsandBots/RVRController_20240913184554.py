@@ -3,7 +3,7 @@ import socket
 
 class RVR_Controller:
     
-    def __init__(self, RVR_ip, RVR_port=65432):
+    def __init__(self, RVR_ip, RVR_port):
         # Initialize socket connection
         self.RVR_ip = RVR_ip
         self.RVR_port = RVR_port
@@ -35,9 +35,28 @@ class RVR_Controller:
     def close(self):
         """Close the socket connection."""
         self.sock.close()
-    
-    def drive_control(self, speed, heading):
-        """Immediately update the speed and heading."""
-        self.set_speed(speed)
-        self.set_heading(heading)
 
+# Example usage:
+async def main():
+    # Create an RVR controller instance and connect to the server
+    controller = RVR_Controller("192.168.68.57", 65432)
+
+    # Set an initial speed and heading
+    controller.set_speed(255)
+    controller.set_heading(90)
+
+    await asyncio.sleep(5)
+    controller.set_speed(100)
+    controller.set_heading(180)
+
+    await asyncio.sleep(5)
+    controller.set_speed(50)
+    controller.set_heading(270)
+
+    # Close the socket connection when done
+    controller.close()
+
+# Start the asyncio event loop
+if __name__ == "__main__":
+    asyncio.run(main())
+s

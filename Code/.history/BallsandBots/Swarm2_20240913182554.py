@@ -9,7 +9,7 @@ class Swarm2:
 
     def __init__(self, names, viconInstance):
         
-        filtered_names = [name for name in names if "rvr" not in name.lower()]
+        filtered_names = [name for names in names if "rvr" not in name.lower()]
         
         self.toys = scanner.find_toys(toy_names=filtered_names)
             

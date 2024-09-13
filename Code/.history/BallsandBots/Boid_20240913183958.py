@@ -147,7 +147,7 @@ class Boid_BOLT:
 
 class Boid_RVR:
 
-    def __init__(self, swarm, viconInstance, id, rvr_ip):
+    def __init__(self, swarm, viconInstance, id):
         self.swarm = swarm
         # self.toy = swarm.get_next_toy()
         self.WAYPOINT_RANGE = 50
@@ -162,10 +162,10 @@ class Boid_RVR:
         self.Vmax = 80
         self.Locator = viconInstance
         self.id = id
-        self.RVR_Controller = RVR_Controller(rvr_ip)        
+        self.RVR_Controller = RVR_Controller('192.168.68.57','rvr5')        
     
-    def start_loop(self,delay):
-        asyncio.run(self.run_boid(delay))
+    def start_loop(self):
+        asyncio.run(run_boid())
     
     def get_speed_heading(self):
         print("getting heading from vicon")
@@ -180,15 +180,19 @@ class Boid_RVR:
         time.sleep(0.5)
         nowX, nowY = self.Locator.get_position(self.id)
         return(math.degrees((math.atan2((nowY-lastY), (nowX-lastX)))))
-     
     
-    def run_boid(self, delay):
+    
+    async def run_boid(self, delay):
         time.sleep(5)
         self.swarm.add_boid(self.id)
         self.RVR_Controller.drive_control(0,0)
         
         try:
             for count in range(0, 240):
+                
+                
+                    # Start the control loop
+                control_task = self.RVR_Controller.start_control_loop()
                 
                 # current position and orientation of robot 480
                 x, y =  self.Locator.get_position(self.id)
@@ -278,6 +282,8 @@ class Boid_RVR:
                     theta = 180-theta
             
                 time.sleep(0.15)
+                
+                await control_task
 
         except KeyboardInterrupt:
             print('Interrupted')

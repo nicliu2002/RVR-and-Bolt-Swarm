@@ -12,29 +12,17 @@ from ViconLocator import ViconLocator
 def main():
     try:
         vicon_instance = ViconLocator()
-        toys = ['SB-CE32','SB-B85A','rvr5']
+        toys = ['rvr5']
         swarm = Swarm2(toys, vicon_instance)
-        bolts = ['SB-CE32','SB-B85A']
         rvrs = ['rvr5']
-        rvr_ips = ["192.168.68.57"]
         threads = []
         delay = (len(toys)-1)*12
 
-        for bolt in bolts: 
-            print("finding toy: " + bolt)
-            boid = Boid_BOLT(swarm,vicon_instance,bolt)
-            print('place next boid...')
-            thread = Thread(target=boid.run_boid, args=(delay,))
-            threads.append(thread)
-            thread.start()
-            time.sleep(12)
-            delay = delay-12
-        
-        for rvr,ip in zip(rvrs, rvr_ips):
+        for rvr in rvrs:
             print("finding toy: " + rvr)
-            boid = Boid_RVR(swarm,vicon_instance,rvr,ip)
+            boid = Boid_RVR(swarm,vicon_instance,rvr)
             print('place next boid...')
-            thread = Thread(target=boid.run_boid, args=(delay,))
+            thread = Thread(target=asyncio.run(boid.run_boid), args=(delay,))
             threads.append(thread)
             thread.start()
             time.sleep(12)

@@ -35,9 +35,4 @@ class RVR_Controller:
     def close(self):
         """Close the socket connection."""
         self.sock.close()
-    
-    def drive_control(self, speed, heading):
-        """Immediately update the speed and heading."""
-        self.set_speed(speed)
-        self.set_heading(heading)
 

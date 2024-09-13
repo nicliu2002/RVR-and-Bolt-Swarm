@@ -38,6 +38,7 @@ class RVR_Controller:
     
     def drive_control(self, speed, heading):
         """Immediately update the speed and heading."""
-        self.set_speed(speed)
-        self.set_heading(heading)
+        self.outlet.push_sample([speed, heading])
+        self.lastSpeed = speed
+        self.lastHeading = heading
 
