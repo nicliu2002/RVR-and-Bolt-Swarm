@@ -1,0 +1,101 @@
+All initial tests used:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.02
+        self.Wa = 0.02
+        self.Ws = 0.01
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+for both RVR and BOLT
+
+test4.csv:
+
+BOLT:
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.02
+        self.Wa = 0.02
+        self.Ws = 0.01
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+RVR:
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.1
+        self.Wa = 0.02
+        self.Ws = 0.01
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+
+RVR Update:
+
+RVR
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.2
+        self.Wa = 0.2
+        self.Ws = 0.1
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+Bolt
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.02
+        self.Wa = 0.02
+        self.Ws = 0.01
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+Swarming Behaviour 1 test 1:
+
+BOLT
+        self.WAYPOINT_RANGE = 25
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 25
+        self.Wc = 0.3
+        self.Wa = 0.8
+        self.Ws = 0.1
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 70
+
+RVR
+
+        self.WAYPOINT_RANGE = 25
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 25
+        self.Wc = 0.3
+        self.Wa = 0.8
+        self.Ws = 0.1
+        self.vision_theta = 360
+        self.Vmin = 80
+        self.Vmax = 100
+
+
+Swarming Behaviour 1 test 2:
+
+
