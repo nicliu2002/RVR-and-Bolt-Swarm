@@ -27,23 +27,17 @@ class Swarm2:
         self.boids.append(boid_id)
         
         # api to gain headings and speeds
-        self.apis.append(api)
-        
-    def calculate_vel_BOLT(self,api):
-        print("calculating velocity from encoders, units in cm/s, converted to mm/s")
-        deltaX = api.get_velocity()['x']
-        deltaY = api.get_velocity()['y']
-        return 10*(math.sqrt(deltaX**2 + deltaY**2))   
+        self.apis.append(api) 
         
 
     def get_speed_heading(self, id, api):
         if 'SB' in id:
-            speed = self.calculate_vel_BOLT(api)
+            speed = api.get_speed()
             heading = api.get_heading()
             
         elif 'rvr' in id:
-            speed = api.lastSpeed
-            heading = api.lastHeading
+            speed = (api.lastSpeed)/1.5
+            heading = (api.lastHeading)/1.5
             
         else: 
             print(f"Could not find speed or heading no code executed for {id}")

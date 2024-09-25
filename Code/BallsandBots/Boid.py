@@ -10,6 +10,7 @@ from spherov2.sphero_edu import EventType, SpheroEduAPI
 from spherov2.types import Color
 from RVRController import RVR_Controller
 
+out_of_bounds = 100
 
 class Boid_BOLT:
 
@@ -17,12 +18,12 @@ class Boid_BOLT:
         self.swarm = swarm
         self.toy = swarm.get_next_toy()
         self.WAYPOINT_RANGE = 50
-        self.Rc = 100
-        self.Ra = 50
-        self.Rs = 25
-        self.Wc = 0.3
-        self.Wa = 0.8
-        self.Ws = 0.1
+        self.Rc = 175
+        self.Ra = 100
+        self.Rs = 50
+        self.Wc = 1.3
+        self.Wa = 1.0
+        self.Ws = 1.5
         self.vision_theta = 360
         self.Vmin = 50
         self.Vmax = 70
@@ -68,12 +69,12 @@ class Boid_BOLT:
                 for count in range(0, 240):
                     # current position and orientation of robot 480
                     x, y =  self.Locator.get_position(self.id)
-                    velocity = self.calculate_vel(boid)
+                    velocity = boid.get_speed()
                     theta = boid.get_heading()
                     
-                    print("error in heading is: ")
-                    theta_error = abs(theta - self.calculate_heading())
-                    print(f"{theta_error}")
+                    # print("error in heading is: ")
+                    # theta_error = abs(theta - self.calculate_heading())
+                    # print(f"{theta_error}")
                     
                     data = str(time.time_ns()) + ", " + self.toy.name + ", " + str(x) + ", " + str(y) + ", " + str(velocity) + ", " + str(theta) + ", "
                    
@@ -120,7 +121,7 @@ class Boid_BOLT:
                         data = data + str(s_com[2]) + "\n"
                     else:
                         data = data + "0\n"  
-                    self.swarm.log_data(data)
+                    # self.swarm.log_data(data)
                  
                     combined_vel = Swarm2.weighted_sum_forces(forces, weights)
                     # print('vx vy ' + str(combined_vel[0]) + ', ' + str(combined_vel[1]))
@@ -138,24 +139,30 @@ class Boid_BOLT:
                         boid.set_speed(self.Vmax)
                                    
                     # calculate a predicted target 50cm in front of self
-                    waypoint_x = boid.get_location()['x']
-                    waypoint_y = boid.get_location()['y']
+                    # waypoint_x = boid.get_location()['x']
+                    # waypoint_y = boid.get_location()['y']
+                    
+                    waypoint_x, waypoint_y = self.Locator.get_position(self.id)
                     theta = boid.get_heading()                  
                     target_x = waypoint_x + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
                     target_y = waypoint_y + self.WAYPOINT_RANGE*math.cos(math.radians(theta))
                    
                     # wall reflection if target will be 'out of bounds'
-                    if target_x > 100 or target_x < -100:
+                    if target_x > out_of_bounds or target_x < -out_of_bounds:
+                        print(f"{self.id} is out of bounds of x")
                         boid.set_heading(-theta)
                         theta = -theta
                         target_x = waypoint_x + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
                         target_y = waypoint_y + self.WAYPOINT_RANGE*math.cos(math.radians(theta))    
  
-                    if target_y > 100 or target_y < -100:
+                    if target_y > out_of_bounds or target_y < -out_of_bounds:
+                        print(f"{self.id} is out of bounds of y")
                         boid.set_heading(180-theta)
                         theta = 180-theta
+                        
+                    
                
-                    time.sleep(0.05)
+                    time.sleep(0.2)
             except KeyboardInterrupt:
                 print('Interrupted')
                 
@@ -168,14 +175,14 @@ class Boid_RVR:
         # self.toy = swarm.get_next_toy()
         self.WAYPOINT_RANGE = 50
         self.Rc = 100
-        self.Ra = 50
-        self.Rs = 25
-        self.Wc = 0.3
+        self.Ra = 150
+        self.Rs = 100
+        self.Wc = 0.5
         self.Wa = 0.8
-        self.Ws = 0.1
+        self.Ws = 1.5
         self.vision_theta = 360
-        self.Vmin = 80
-        self.Vmax = 100
+        self.Vmin = 75
+        self.Vmax = 115
         self.Locator = viconInstance
         self.id = id
         self.RVR_Controller = RVR_Controller(rvr_ip)        
@@ -223,8 +230,8 @@ class Boid_RVR:
                 x, y =  self.Locator.get_position(self.id)
                 velocity, theta = self.RVR_Controller.lastSpeed, self.RVR_Controller.lastHeading
                 
-                theta_error = abs(theta - self.calculate_heading())
-                print(f"error in heading is: {theta_error}")
+                # theta_error = abs(theta - self.calculate_heading())
+                # print(f"error in heading is: {theta_error}")
                 
                 data = str(time.time_ns()) + ", " + self.id + ", " + str(x) + ", " + str(y) + ", " + str(velocity) + ", " + str(theta) + ", "
                 
@@ -271,7 +278,7 @@ class Boid_RVR:
                     data = data + str(s_com[2]) + "\n"
                 else:
                     data = data + "0\n"  
-                self.swarm.log_data(data)
+                # self.swarm.log_data(data)
                 
                 combined_vel = Swarm2.weighted_sum_forces(forces, weights)
                 # print('vx vy ' + str(combined_vel[0]) + ', ' + str(combined_vel[1]))
@@ -297,17 +304,17 @@ class Boid_RVR:
                 print(f"RVR {self.id} moving to target x {target_x} and target y {target_y}")
                 
                 # wall reflection if target will be 'out of bounds'
-                if target_x > 100 or target_x < -100:
+                if target_x > out_of_bounds or target_x < -out_of_bounds:
                     self.RVR_Controller.set_heading(-theta)
                     theta = -theta
                     target_x = waypoint_x + self.WAYPOINT_RANGE*math.sin(math.radians(theta))
                     target_y = waypoint_y + self.WAYPOINT_RANGE*math.cos(math.radians(theta))    
 
-                if target_y > 100 or target_y < -100:
+                if target_y > out_of_bounds or target_y < -out_of_bounds:
                     self.RVR_Controller.set_heading(180-theta)
                     theta = 180-theta
             
-                time.sleep(0.05)
+                time.sleep(0.2)
 
         except KeyboardInterrupt:
             print('Interrupted')

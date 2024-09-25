@@ -18,19 +18,19 @@ class RVR_Controller:
         """Send the current speed and heading via socket."""
         message = f"{speed},{heading}\n"  # Send as a comma-separated string
         self.sock.sendall(message.encode('utf-8'))  # Send encoded message over the socket
-        print(f"Sent: Speed={speed}, Heading={heading}")
+        # print(f"Sent: Speed={speed}, Heading={heading}")
     
     def set_heading(self, heading):
         """Set the heading and send it with the current speed."""
         self.lastHeading = heading
         self.send_data(self.lastSpeed, self.lastHeading)
-        print(f"Set Heading to {heading}")
-        
+        # print(f"Set Heading to {heading}")
+         
     def set_speed(self, speed):
         """Set the speed and send it with the current heading."""
         self.lastSpeed = speed
         self.send_data(self.lastSpeed, self.lastHeading)
-        print(f"Set Speed to {speed}")
+        # print(f"Set Speed to {speed}")
 
     def close(self):
         """Close the socket connection."""
