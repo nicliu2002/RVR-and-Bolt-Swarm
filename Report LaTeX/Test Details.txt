@@ -1,0 +1,404 @@
+All initial tests used:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.02
+        self.Wa = 0.02
+        self.Ws = 0.01
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+for both RVR and BOLT
+
+test4.csv:
+
+BOLT:
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.02
+        self.Wa = 0.02
+        self.Ws = 0.01
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+RVR:
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.1
+        self.Wa = 0.02
+        self.Ws = 0.01
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+
+RVR Update:
+
+RVR
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.2
+        self.Wa = 0.2
+        self.Ws = 0.1
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+Bolt
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 0.02
+        self.Wa = 0.02
+        self.Ws = 0.01
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 80
+
+Swarming Behaviour 1 test 1:
+
+BOLT
+        self.WAYPOINT_RANGE = 25
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 25
+        self.Wc = 0.3
+        self.Wa = 0.8
+        self.Ws = 0.1
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 70
+
+RVR
+
+        self.WAYPOINT_RANGE = 25
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 25
+        self.Wc = 0.3
+        self.Wa = 0.8
+        self.Ws = 0.1
+        self.vision_theta = 360
+        self.Vmin = 80
+        self.Vmax = 100
+
+
+Swarming Behaviour 1 test 2:
+
+BOLT
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 150
+        self.Rs = 25
+        self.Wc = 0.3
+        self.Wa = 0.8
+        self.Ws = 0.1
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 70
+
+RVR
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 150
+        self.Rs = 25
+        self.Wc = 0.3
+        self.Wa = 0.8
+        self.Ws = 0.1
+        self.vision_theta = 360
+        self.Vmin = 80
+        self.Vmax = 100
+
+
+Swarming Behaviour 1 test 3:
+
+BOLT:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 150
+        self.Rs = 25
+        self.Wc = 1.3
+        self.Wa = 1.0
+        self.Ws = 0.3
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 70
+
+RVR:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 150
+        self.Rs = 25
+        self.Wc = 0.5
+        self.Wa = 0.8
+        self.Ws = 0.1
+        self.vision_theta = 360
+        self.Vmin = 70
+        self.Vmax = 140
+
+Swarming Behaviour 1 test 5:
+
+BOLT
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 175
+        self.Ra = 100
+        self.Rs = 50
+        self.Wc = 1.3
+        self.Wa = 1.0
+        self.Ws = 0.8
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 70
+
+RVR
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 150
+        self.Rs = 100
+        self.Wc = 0.5
+        self.Wa = 0.8
+        self.Ws = 0.4
+        self.vision_theta = 360
+        self.Vmin = 75
+        self.Vmax = 115
+
+Swarming Behaviour 1 test 6 (targeting flocking now):
+
+BOLT:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 25
+        self.Wc = 1.0
+        self.Wa = 1.0
+        self.Ws = 1.5
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 75
+
+RVR:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 25
+        self.Wc = 1.0
+        self.Wa = 1.0
+        self.Ws = 1.5
+        self.vision_theta = 360
+        self.Vmin = 135
+        self.Vmax = 150
+
+
+
+Swarming Behaviour 1 test 7 (increasing separation and decreasing speed due to too many collisions)
+
+BOLT:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 25 
+        self.Wc = 1.0
+        self.Wa = 1.0
+        self.Ws = 1.5
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 75
+
+RVR:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 25
+        self.Wc = 1.0
+        self.Wa = 1.0
+        self.Ws = 1.5
+        self.vision_theta = 360
+        self.Vmin = 75
+        self.Vmax = 105
+
+
+Swarming Behaviour 1 test 8 (increasing separation range to compensate for long time between vision and calculation)
+
+BOLT:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 35
+        self.Wc = 1.0
+        self.Wa = 1.0
+        self.Ws = 1.7
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 75
+
+RVR:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 35
+        self.Wc = 1.0
+        self.Wa = 1.0
+        self.Ws = 1.7
+        self.vision_theta = 360
+        self.Vmin = 75
+        self.Vmax = 105
+
+Swarming Behaviour 1 test 9 -> implemented
+
+BOLT:
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 75
+        self.Rs = 50
+        self.Wc = 1.0
+        self.Wa = 1.3
+        self.Ws = 1.2
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 75
+RVR:
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 35
+        self.Wc = 1.0
+        self.Wa = 1.5
+        self.Ws = 1.2
+        self.vision_theta = 360
+        self.Vmin = 75
+        self.Vmax = 105
+
+Swarming Behaviour 1 test 10:
+
+BOLT:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 75
+        self.Rs = 50
+        self.Wc = 1.0
+        self.Wa = 1.3
+        self.Ws = 1.2
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 75
+
+RVR:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 50
+        self.Rs = 50
+        self.Wc = 1.0
+        self.Wa = 1.5
+        self.Ws = 1.2
+        self.vision_theta = 360
+        self.Vmin = 75
+        self.Vmax = 105
+
+Line test 1:
+
+BOLT
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 1.0
+        self.Wa = 1.0
+        self.Ws = 0
+        self.vision_theta = 180
+        self.Vmin = 50
+        self.Vmax = 75
+
+RVR
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 1.0
+        self.Wa = 1.0
+        self.Ws = 0
+        self.vision_theta = 180
+        self.Vmin = 75
+        self.Vmax = 105
+
+Line Test 2:
+
+BOLT
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 100
+        self.Rs = 25
+        self.Wc = 1.0
+        self.Wa = 1.0
+        self.Ws = 0
+        self.vision_theta = 180
+        self.Vmin = 50
+        self.Vmax = 75
+
+RVR
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 100
+        self.Ra = 125
+        self.Rs = 25
+        self.Wc = 1.0
+        self.Wa = 1.3
+        self.Ws = 0
+        self.vision_theta = 180
+        self.Vmin = 75
+        self.Vmax = 105
+
+GRAVITY:
+
+BOLT:
+
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 400
+        self.Ra = 400
+        self.Rs = 25
+        self.Wc = 1.0
+        self.Wa = 0
+        self.Ws = 0.44
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 75
+        
+RVR
+        self.WAYPOINT_RANGE = 50
+        self.Rc = 400
+        self.Ra = 400
+        self.Rs = 25
+        self.Wc = 1.0
+        self.Wa = 0
+        self.Ws = 0.44
+        self.vision_theta = 360
+        self.Vmin = 50
+        self.Vmax = 75
+        self.Vmin = 75
+        self.Vmax = 105
